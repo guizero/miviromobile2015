@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
+
+        <!-- jQueryMobileCSS - styling-->
+        <link rel="stylesheet" href="css/jqeury.mobile.theme.min.css" />
+        
+        <!-- jQueryMobile icons -->
+        <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+
+        <!-- jQueryMobile core CSS -->
+        <link rel="stylesheet" href="css/jquery.mobile.min.css" />
+        
+        <!-- Owl stylesheet -->
+        <link rel="stylesheet" href="css/owl.carousel.css">
+        
+        <!-- Owl Theme -->
+        <link rel="stylesheet" href="css/owl.theme.css">
+        
+        <!-- NIGHTLY style -->
+        <link rel="stylesheet" href="css/nightly.css" />
+        
+        <!-- Load Google Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900,300italic,400italic,600italic,700italic|Oswald:400,700' rel='stylesheet' type='text/css'>
+        
+        <!-- Load Font Awesome Icons -->
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+
+        <!-- jQuery / jQueryMobile Scripts -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.mobile.min.js"></script>
+            
+        <!-- Owl Carousel -->
+        <script src="js/owl.carousel.min.js"></script>
+
+        <title>Miviro Mobile 1.0</title>
+    </head>
+    <body>
+        <!- Página Inicialização ->
+        <div data-role="page" id="index">
+            <div data-role="header" data-position="fixed" data-position="fixed">
+                 <h1>Inicializando...</h1>
+
+            </div>
+            <div data-role="content"></div>
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed">
+                 <h1>Footer</h1>
+
+            </div>
+        </div>
+
+        <!- Page 1 - Login ->
+        <div data-role="page" id="login" style="position: relative;">
+            <a href="#config" data-transition="pop"><img src="img/logo.png" style="width:50%;display:block;margin-left:auto;margin-right:auto; margin-top:20px;"></a>
+            
+            <div data-role="footer" data-position="fixed" data-theme="ko" style="border:0">
+                
+                                <input type="email" name="email" data-corners="false" id="email" value="" placeholder="E-mail" data-theme="b" style="background-color:white"/>
+                                <input type="password" name="password" data-corners="false" id="password" value="" placeholder="Senha" data-theme="b" style="background-color:white"/>
+                                <form id="useroradmin">
+                                <fieldset data-role="controlgroup" data-type="horizontal" class="loginradio" data-theme="b">
+                                        <input type="radio" name="user_or_admin" id="user_or_admina" value="user" checked="checked">
+                                        <label for="user_or_admina">Guia</label>
+                                        <input type="radio" name="user_or_admin" id="user_or_adminb" value="agencia_admin">
+                                        <label for="user_or_adminb">Coordenação</Coordenação>
+        
+                                    </fieldset>
+                                </form>
+                                <button id="login_button" class="ui-button nightly-button" data-theme="b"><i class="fa fa-user"></i>Entrar</button>
+
+            </div>
+        </div>
+
+        <!- Page 2 - Selecionar Temporada Pós-Login ->
+        <div data-role="page" id="temporadas" data-theme="b">
+            <div data-role="header" data-position="fixed" data-position="fixed">
+
+                 <h1>Selecione a Temporada</h1>
+
+            </div>
+            <div data-role="content" style="text-align:center;">
+                <h3> Selecionar temporada</h3>
+                O Miviro Mobile trabalha somente com uma temporada por vez. Selecione a temporada desejada. e clique em sincronizar. É possível selecionar outra temporada no menu configurações.
+                <br>
+                <br>
+                <select name="temporada-select" id="temporada-select">
+                  <option value="selecione">Selecione a Temporada</option>
+                </select>
+                <br>
+                <br>
+                <a href="#" class="sincroniza_button" data-role="button" data-corners="false" data-shadow="true" data-iconshadow="true" data-wrapperels="span">
+                    <span class="ui-btn-inner ui-btn-corner-all">
+                        <span class="ui-btn-text">Sincronizar Dados</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!- Page 3 - Principal ->
+        <div data-role="page" id="principal" class="page-content" data-theme="b">
+            
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Principal</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="content">
+
+                
+                 
+                <h4>Menu</h4>
+                <div class="decoration"></div>
+
+
+                <a href="#" class="ui-btn" id="lista_grupos" data-theme="b"><i class="fa fa-users"></i>Grupos</a>
+                <a href="#" class="ui-btn scanpax"><i class="fa fa-barcode"></i>Scan</a>
+                <a href="#" class="ui-btn button-blue contador"><i class="fa fa-sort-numeric-asc"></i>Contador</a>
+
+            </div><!-- /content -->        
+            
+        </div>
+
+        <!-Lista Grupos->
+        <div data-role="page" id="grupos" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Grupos</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                            
+                <div class="decoration"></div>
+                <div id="articleHandlebars" data-demo-html="true"></div>                      
+            </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                     <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Menu Grupos->
+        <div data-role="page" id="grupomenu" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Grupos</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+                <h4>Grupos > <span class="nomegrupo">Grupo Vermelho</span></h4>
+                <div class="decoration"></div>
+                <div id="articleHandlebars" data-demo-html="true"></div> 
+            </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton hideguia">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Passageiros->
+        <div data-role="page" id="listapassageirosdogrupo" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Passageiros</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <h4><span class="nomegrupo">Grupo Vermelho</span> > Passageiros</h4>
+               <div class="decoration"></div>  
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Passageiro View->
+        <div data-role="page" id="passageiro-view" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Ver Passageiro</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <div class="decoration"></div>  
+                  <div id="articleHandlebars" data-demo-html="true"></div>
+               
+                  <div id="articleHandlebarsResponsaveis" data-demo-html="true"></div>
+                
+                  <div id="articleHandlebarsContatos" data-demo-html="true"></div>
+                
+                  <div id="articleHandlebarsEnderecos" data-demo-html="true"></div>
+                
+                  <div id="articleHandlebarsOpcionais" data-demo-html="true"></div>
+                
+                  <div id="articleHandlebarsFicha" data-demo-html="true"></div>
+                  
+            </div><!-- /content -->      
+            
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Day By Day ->
+        <div data-role="page" id="daybyday" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Day-by-day</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">    
+                <h4><span class="nomegrupo">Grupo Vermelho</span> > Day-by-Day</h4>
+                <div class="decoration"></div>
+                <div id="articleHandlebars" data-demo-html="true"></div>  
+            </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Vôos ->
+        <div data-role="page" id="bloqueios" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Trechos Aéreos</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+            <div data-role="content" id="listview-content">
+                <h4><span class="nomegrupo">Grupo Vermelho</span> > Vôos</h4>
+                <div class="decoration"></div>
+                <div id="articleHandlebars" data-demo-html="true"></div>
+            </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Quartos ->
+        <div data-role="page" id="quartos" data-theme="b">
+           <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Quartos</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content"> 
+                <h4><span class="nomegrupo">Grupo Vermelho</span> > Quartos</h4>
+                <div class="decoration"></div>
+                <div id="articleHandlebars" data-demo-html="true"></div>
+            </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Contar por Lista->
+        <div data-role="page" id="contarporlista" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Contar</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <h4><span class="nomegrupo">Grupo Vermelho</span> > Contar por Lista</h4>
+               <div class="decoration"></div>  
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Contar por Scan->
+        <div data-role="page" id="contarporscan" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Contagem Scan</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+            <div data-role="content" id="listview-content">                 
+               <h4><span class="nomegrupo">Grupo Vermelho</span> > Contar por Scan</h4>
+               <div class="decoration"></div>
+               <h3>Passageiros restantes:</h3>
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed">
+                <div class="ui-grid-b ui-responsive" style="text-align: center">
+                    <h4>Escaneados: <span id="scaneados">0</span></h4>
+                </div>
+                <div class="ui-grid-b ui-responsive" style="text-align: center">
+                    <h4>Faltam: <span id="scantotal">0</span></h4>
+                </div>
+                <div class="ui-grid-b ui-responsive" style="text-align: center">
+                    <a href="#" class="ui-shadow ui-btn ui-corner-all" data-theme="b" id="contarscanbutton" ><i class="fa fa-barcode"></i>ESCANEAR</a>
+                </div>
+            </div>
+        </div>
+
+        <!-Opcionais->
+        <div data-role="page" id="opcionais" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Opcionais</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <h4><span class="nomegrupo">Grupo Vermelho</span> > Opcionais</h4>
+               <div class="decoration"></div>  
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Pedidos->
+        <div data-role="page" id="pedidos" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Pedidos</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <h4><span class="nomegrupo">Grupo Vermelho</span> > Opcionais > <span class="titulo">Opcional</span></h4>
+               <div class="decoration"></div>  
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Contador->
+        <div data-role="page" id="contador" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Contagem Scan</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <h4>Contador</h4>
+               <div class="decoration"></div>  
+               <a data-corners="false" id="target" class="big" href="#" data-role="button" data-theme="b"><span id="output">0</span></a>
+               <h4><a href="#" data-role="button" id="reset" data-theme="r">Reiniciar</a></h4>
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!-Config->
+        <div data-role="page" data-close-btn="right" data-dialog="true" data-corners="false" id="config" data-theme="b">
+            <div data-role="header" data-position="fixed">
+            <h3>Configurações</h3>
+            </div>
+
+            <div role="main" class="ui-content">
+                <!-- <h4>Grupo Principal</h4>
+                <p>Se você quiser ir direto para a página de um grupo específico sempre que você abrir o Miviro Mobile, selecione-o abaixo.</p>
+                <select name="configGP" id="configGP">
+                    <option value="nenhum">Nenhum grupo</option>
+                </select> -->
+                <div class="decoration"></div>
+                <h4>Servidor</h4>
+                <p>Somente modifique este dado se você souber o que está fazendo.</p>
+                <input type="text" name="text-basic" id="servidor" value="">
+                <a href="#" id="atualizaserver" class="ui-shadow ui-btn ui-corner-all">Atualizar Servidor</a>
+
+            </div>
+        </div>
+
+        <!-Cadastro Pulseiras->
+        <div data-role="page" id="cadastropulseiras" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Pulseiras</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <a href="#popupMenu" data-rel="popup" data-transition="slideup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-gear ui-btn-icon-left ui-btn-a">Sincronização...</a>
+               <div data-role="popup" id="popupMenu" data-theme="b">
+                       <ul data-role="listview" data-inset="true" style="min-width:210px;margin-top:-50px !important">
+                           <li data-role="list-divider">Escolha o que deseja fazer</li>
+                           <li><a href="javascript:void(0)" class="enviapulseira">Enviar para o servidor</a></li>
+                           <li><a href="javascript:void(0)" class="buscapulseira">Buscar do servidor</a></li>
+                       </ul>
+               </div>
+               <div class="decoration"></div>  
+               <div id="articleHandlebars" data-demo-html="true"></div> 
+           </div>
+
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+        <!- Scripts ->                   
+        
+        <script type="text/javascript" src="cordova.js"></script>        
+        <script type="text/javascript" src="js/handlebars-v1.3.0.js"></script>
+        <script type="text/javascript" src="js/jquery.backstretch.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();                  
+        </script>
+
+        <!-Templates para o HandleBars->
+
+        <!--Lista de Grupos -->
+        <script id="grupos-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-filter="true" data-inset="true" data-filter-placeholder="Filtrar grupos..." data-corners="false">
+            <li data-role="list-divider">Grupos</li>
+              {{#each grupos}} 
+                <li><a data-id="{{id}}" class="gruposelecionado" href="#"><i class="fa fa-users"></i> {{nome}}</a></li>
+              {{/each}}
+            </ul>
+        </script>
+
+        <!--Lista de Passageiros -->
+        <script id="passageiros-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="true" data-inset="true" data-corners="false" data-filter-placeholder="Filtrar passageiros...">
+              {{#each passageiros}} 
+                <li><a data-id="{{id}}" class="paxselecionado" href="#"><i class="fa fa-user"></i> {{nome}}</a></li>
+              {{/each}}              
+            </ul>
+        </script>
+
+        <!--Conta por Lista -->
+        <script id="contarporlista-template" type="text/x-handlebars-template">
+            <form>
+                <fieldset data-role="controlgroup">
+                    {{#each passageiros}}
+                        <input type="checkbox" name="checkbox-v-{{@index}}" id="checkbox-v-{{@index}}">
+                        <label for="checkbox-v-{{@index}}">{{nome}}</label>
+                    {{/each}}
+                </fieldset>
+            </form>
+        </script>
+
+        <!--Conta por Scan -->
+        <script id="contarporscan-template" type="text/x-handlebars-template">
+            <ol id="listcontarporscan" data-role="listview">
+              {{#each passageiros}} 
+                <li data-id="{{id}}" data-scan-id="{{scanid}}">{{nome}} - {{id}}</li>
+              {{/each}}              
+            </ol>
+        </script>
+
+        <!--Opcionais -->
+        <script id="opcionaisgrupo-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="false" data-inset="true" data-corners="false">
+              {{#each opcionais}} 
+                <li><a data-id="{{id}}" data-titulo="{{titulo}}" data-grupo-id="" class="opcionalselecionado" href="#"><i class="fa fa-gift"></i> {{titulo}}</a></li>
+              {{/each}}              
+            </ul>
+        </script>
+
+        <!--Pedidos -->
+        <script id="pedidos-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="false" data-inset="true" data-corners="false">
+              {{#each pedidos}} 
+                <li class="ui-li ui-li-static ui-btn-up-c situacao{{situacao}}" class='notrunc'><b>{{nome}}</b> 
+
+                          {{#ifCond situacao '==' '-2'}}
+                          (CANCELADO)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '-1'}}
+                          (PENDENTE)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '0'}}
+                          (PRÉ APROVADO)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '1'}}
+                          (CONFIRMADO)
+                          {{/ifCond}}
+                          </li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há pedidos cadastrados</li>
+              {{/each}}              
+            </ul>
+        </script>
+
+        <!-- Detalhe Passageiro -->
+        <script id="detalhepax-template" type="text/x-handlebars-template">
+            <div id="cabecalho">
+                <h5 style="margin-bottom:-20px">{{gruponome}}</h5>
+                <h3 style="margin-bottom:-20px">{{nome}}</h4>
+                <h5>{{data_nascimento}}</h5>
+            </div>
+
+            
+    
+                <div data-role="collapsible" data-iconpos="right">
+                    <h3><i class="fa fa-info"></i>Informações Principais</h3>             
+                    <ul data-role="listview" class="ui-listview" data-inset="true">
+                        <li data-role="list-divider">Passaporte</li>
+                        {{#if n_passaporte}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">{{n_passaporte}}</li>
+                        {{else}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">Não informado</li>
+                        {{/if}}
+                        <li data-role="list-divider">Seguro de Saúde</li>
+                        {{#if seguro}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">{{seguro}}</li>
+                        {{else}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">Não informado</li>
+                        {{/if}}
+                        <li data-role="list-divider">CPF</li>
+                        {{#if cpf}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">{{cpf}}</li>
+                        {{else}}
+                            <li class="ui-li ui-li-static ui-btn-up-c">Não informado</li>
+                        {{/if}}            
+                    </ul>  
+                </div>  
+        </script>
+
+        <script id="responsaveis-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                   <h3><i class="fa fa-users"></i>Responsáveis</h3>
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                        {{#each responsaveis}}
+                          <li class="ui-li ui-li-static ui-btn-up-c" class='notrunc'>{{nome}}</li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há responsáveis cadastrados</li>
+                        {{/each}}                
+                    </ul>
+                </div>
+        </script>
+
+        <script id="enderecos-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                   <h3><i class="fa fa-home"></i>Endereços</h3>
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                        {{#each enderecos}}
+                          <li class="ui-li ui-li-static ui-btn-up-c" class='notrunc'>{{endereco}}</li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há endereços cadastrados</li>
+                        {{/each}}                
+                    </ul>
+                </div>
+        </script>
+
+        <script id="opcionais-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                    <h3><i class="fa fa-gift"></i>Opcionais</h3>
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                        {{#each opcionais}}
+                          <li class="ui-li ui-li-static ui-btn-up-c situacao{{situacao}}" class='notrunc'><b>{{titulo}}</b> 
+
+                          {{#ifCond situacao '==' '-2'}}
+                          (CANCELADO)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '-1'}}
+                          (PENDENTE)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '0'}}
+                          (PRÉ APROVADO)
+                          {{/ifCond}}
+                          {{#ifCond situacao '==' '1'}}
+                          (CONFIRMADO)
+                          {{/ifCond}}
+                          </li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há opcionais cadastrados</li>
+                        {{/each}}                
+                    </ul>
+                </div>
+        </script>
+
+        <script id="contatos-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                    <h3><i class="fa fa-list-alt"></i>Contatos</h3>
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                        {{#each contatos}}
+                          <li class="ui-li ui-li-static ui-btn-up-c" class='notrunc'>{{valor}} - {{tipo}} - {{de_quem}}</li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há contatos cadastrados</li>
+                        {{/each}}                
+                    </ul>
+                </div>
+        </script>
+
+        <script id="resumoficha-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                    <h3><i class="fa fa-plus-square"></i>Resumo Médico</h3>
+                       <ul data-role="listview" class="ui-listview" data-inset="true">
+                            {{#each resumo_medico}}
+                              <li data-role="list-divider">{{titulo}}</li>
+                              <li class="ui-li ui-li-static ui-btn-up-c" class='notrunc'>{{descricao}}</li>
+                            {{else}}
+                              <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há Ficha Médica cadastrada para este cliente ou este cliente não possui questões médicas</li>
+                            {{/each}}                
+                        </ul>
+                </div>
+        </script>
+
+        <!-- Menu Grupos -->
+        <script id="menugrupos-template" type="text/x-handlebars-template">
+            <ul data-role="listview" data-inset="true" data-corners="false">
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="lista"><i class="fa fa-users"></i>Lista de Passageiros</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="bloqueios"><i class="fa fa-plane"></i>Trechos Aéreos</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="daybyday"><i class="fa fa-list"></i>Day-By-Day</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="quartos"><i class="fa fa-building"></i>Quartos</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="opcionais"><i class="fa fa-gift"></i>Opcionais</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="contarporlista"><i class="fa fa-list-ol"></i>Contar por Lista</a></li>
+                <li><a data-id="{{id}}" class="menugrupo" href="#" data-menu="contarporscan"><i class="fa fa-barcode"></i>Contar por Scan</a></li>
+            </ul>
+        </script>
+
+        <!--Day by Day-->
+        <script id="daybyday-template" type="text/x-handlebars-template">
+           <h2> Day By Day </h2>  
+
+           <div data-role="collapsibleset" data-inset="false" data-mini="true">
+               {{#each daybydays}}
+               <div data-role="collapsible">
+                   <h3>Dia {{math @index "+" 1}} - {{@key}} ({{#each atividades}} {{to}},{{/each}})</h3>
+                   <table data-role="table" id="table-custom-{{@index}}" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Visualizar..." data-column-popup-theme="a">
+                    <thead>
+                      <tr class="ui-bar-d">
+                        <th>Horário</th>
+                        <th>De</th>
+                        <th>Para</th>
+                        <th data-priority="2">Trans.</th>
+                        <th data-priority="1">Obs.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each atividades}}
+                      <tr>
+                        <th>{{time}}</th>
+                        <td>{{from}}</td>
+                        <td>{{to}}</td>
+                        <td>{{transportation}}</td>
+                        <td>{{obs}}</td>
+                      </tr>
+                      {{/each}}          
+                    </tbody>
+                   </table>
+               </div>
+               {{/each}}  
+           </div>
+        </script>
+
+        <!--Quartos-->
+        <script id="quartos-template" type="text/x-handlebars-template">
+           <div data-role="tabs">
+               <div data-role="navbar">
+                   <ul>
+                   {{#each quartos}}
+                     <li><a href="#quarto{{@index}}" data-theme="b" data-ajax="false">{{@key}}</a></li>
+                   {{/each}}  
+                   </ul>
+               </div>
+               {{#each quartos}}
+                   <div id="quarto{{@index}}" style="margin-top:30px;">
+                   <ul data-role="listview" data-filter="true" data-inset="true">
+                       {{#each this}} 
+                           <li data-role="list-divider">Quarto {{math @index "+" 1}}</li>
+                           {{#each clientes}}
+                               <li {{#if @first}}class="ui-btn-active merda"{{/if}}><a data-id="{{id}}" class="paxselecionado" href="#" data-from="#quartos">{{nome}}</a></li>
+                           {{/each}}
+                       {{/each}}
+                   </ul>
+                   </div>
+               {{/each}}
+           </div>
+
+        </script>
+
+       <!--Bloqueio de Voos-->
+       <script id="bloqueios-template" type="text/x-handlebars-template">
+          <div data-role="tabs">
+              <div data-role="navbar">
+                  <ul>
+                  {{#each bloqueios}}
+                    <li><a href="#bloqueio{{@index}}" data-theme="b" data-ajax="false">Bloqueio {{math @index "+" 1}}</a></li>
+                  {{/each}}  
+                  </ul>
+              </div>
+              {{#each bloqueios}}
+                  <div id="bloqueio{{@index}}" style="margin-top:30px;">
+                    <table data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Mostrar colunas..." data-column-popup-theme="a">
+                             <thead>
+                               <tr class="ui-bar-d">
+                                 <th>Trecho</th>
+                                 <th>Partida</th>
+                                 <th>Cia/#</th>
+                                 <th>De</th>
+                                 <th data-priority="3">Para</th>
+                                 <th data-priority="4">Chegada</th>
+                               </tr>
+                             </thead>
+                             <tbody>
+                                {{#each trechos}}
+                               <tr>
+                                 <th>{{math @index "+" 1}}</th>
+                                 <td>{{departure}}</td>
+                                 <td>{{airline}}{{flightnumber}}</td>
+                                 <td>{{from}}</td>
+                                 <td>{{to}}</td>
+                                 <td>{{arrival}}</td>
+                               </tr>
+                               {{/each}}      
+                             </tbody>
+                           </table>
+                    
+                  </div>
+              {{/each}}
+          </div>
+        </script>
+
+        <!--Conta por Lista -->
+        <script id="cadastropulseiras-template" type="text/x-handlebars-template">
+            
+                <ul data-role="listview" class="ui-listview">
+                    {{#each passageiros}}
+                        
+                          {{#if scanid}}
+                                <li data-icon="success" style="background-color:green"><a data-id="{{id}}" class="cadastrascanlink" href="#"><i class="fa fa-user"></i> {{nome}} ({{scanid}})</a></li>
+                            {{else}}
+                                <li data-icon="delete" style="background-color:red"><a data-id="{{id}}" class="cadastrascanlink" href="#"><i class="fa fa-user"></i> {{nome}} (código não cadastrado)</a></li>
+                            {{/if}}
+
+                          
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há contatos cadastrados</li>
+                    {{/each}}     
+                </ul>
+            
+        </script>
+
+        <script id="buscapax-template" type="text/x-handlebars-template">
+               
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                        {{#each buscapax}}
+                          <li><a data-id="{{id}}" data-from="#grupomenu" class="paxselecionado" href="#"><i class="fa fa-user"></i> {{nome}}</a></li>
+                        {{else}}
+                          <li data-role="list-divider" style='text-align:center' class='notrunc'>Não há contatos cadastrados</li>
+                        {{/each}}                
+                    </ul>                
+        </script>
+
+
+        <!-SIDEBAR LEFT->
+        <div data-role="panel" data-display="push" id="sidebar" data-theme="b">
+            <ul data-role="listview">
+                    <li data-icon='false'><a data-ajax="false" href="#" class="principal">Principal</a></li>
+                    <li data-icon='false'><a data-ajax="false" href="#" class="scanpax">Scan</a></li>
+                    <li data-icon='false'><a href="#" class="contador">Contador</a></li>
+                    <li data-icon='false'><a data-ajax="false" href="#" class="sincroniza_button_menu">Atualizar Dados</a></li>
+                    <li data-icon='false'><a href="#config" data-ajax="false" data-transition="pop" class="abreconfig">Configurações</a></li>
+                    <li data-icon='false'><a href="#" class="cadastropulseiras">Pulseiras</a></li>
+                    <li data-icon='false'><a href="#" id="logout_button"><i class="fa fa-power-off"></i>Sair</a></li>
+                </ul>
+        </div>
+
+        <!- SIDEBAR RIGHT ->
+        <div data-role="panel" data-display="push" id="sidesearch" data-position="right">                           
+                    <input data-role="none" class="nightly-input" type="text" name="paxabuscar" placeholder="Procurar cliente..." />
+                    <button type="submit" id="buscapassageiro" class="ui-shadow ui-btn ui-corner-all ui-mini">Procurar</button>
+                    <div data-role="content" id="listview-content">                            
+                        <div id="articleHandlebars" data-demo-html="true"></div>
+                    </div>
+
+            </div>
+    </body>
+</html>

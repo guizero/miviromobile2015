@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+
+.sidebar-content-background{
+	background-image:url(../../images/misc/sidebar-bg-grass.png);
+	width:262px;
+	height:100%;
+}
+
+
+.nav-item-submenu a{
+	opacity:0.5;
+}

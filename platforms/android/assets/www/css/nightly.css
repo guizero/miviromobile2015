@@ -1022,3 +1022,8 @@ progress[data-theme=b]::-moz-progress-value {
 .ui-loader .ui-icon-loading {
     background-color: white !important;
 }
+
+.ui-listview > .ui-li-static, .ui-listview > .ui-li-divider, .ui-listview > li {
+    white-space: normal !important;           /* CSS 2.0 */
+    word-wrap: break-word;      /* IE 5+ */
+}

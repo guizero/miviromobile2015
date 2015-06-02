@@ -6,5 +6,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "com.mirasense.scanditsdk.plugin": {
+        "source": {
+            "type": "local",
+            "path": "scandit"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

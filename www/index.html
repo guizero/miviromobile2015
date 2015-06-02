@@ -352,13 +352,25 @@
 
             <div data-role="footer" data-tap-toggle="false" data-position="fixed">
                 <div class="ui-grid-b ui-responsive" style="text-align: center">
-                    <h4>Escaneados: <span id="scaneados">0</span></h4>
+                    <h4 style="float:left">Faltam:</h4><h4 style="float:right">Escaneados:</h4>
                 </div>
-                <div class="ui-grid-b ui-responsive" style="text-align: center">
-                    <h4>Faltam: <span id="scantotal">0</span></h4>
+                <div class="ui-grid-b ui-responsive" style="margin-top:-50px; margin-bottom:20px">
+                    <h1><span style="float:left" id="scantotal">0</span><span style="float:right" id="scaneados">0</span></h1>
                 </div>
-                <div class="ui-grid-b ui-responsive" style="text-align: center">
-                    <a href="#" class="ui-shadow ui-btn ui-corner-all" data-theme="b" id="contarscanbutton" ><i class="fa fa-barcode"></i>ESCANEAR</a>
+                <div class="ui-grid-b ui-responsive" style="">
+                    <a href="#" class="ui-shadow ui-btn ui-corner-all backbutton"  data-theme="b" ><i class="fa fa-chevron-left"></i></a>
+                    <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-transition="pop" data-theme="b"><i class="fa fa-refresh"></i></a>
+                    <a href="#" class="ui-shadow ui-btn ui-corner-all" data-theme="b" style="float:right" id="contarscanbutton" ><i class="fa fa-barcode"></i>ESCANEAR</a>
+                </div>
+            </div>
+            <div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+                <div data-role="header" data-theme="b" class="ui-corner-top">
+                    <h1>Reiniciar a contagem</h1>
+                </div>
+                <div data-role="content" data-theme="b" class="ui-corner-bottom ui-content">
+                    <h4 class="ui-title">Você deseja realmente reiniciar?</h4>
+                    <a href="#" data-role="button" data-inline="true" data-rel="back" data-theme="b">Cancel</a>
+                    <a href="#" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b" class="refreshscan">Reiniciar</a>
                 </div>
             </div>
         </div>
@@ -443,11 +455,11 @@
             </div>
 
             <div role="main" class="ui-content">
-                <!-- <h4>Grupo Principal</h4>
-                <p>Se você quiser ir direto para a página de um grupo específico sempre que você abrir o Miviro Mobile, selecione-o abaixo.</p>
+                <h4>Grupo Principal</h4>
+                <p>Se você quiser ir direto para a página de um grupo específico sempre que você abrir o Miviro Mobile, selecione-o abaixo. Para poder gerenciar pulseiras, também é preciso ter um grupo principal selecionado.</p>
                 <select name="configGP" id="configGP">
                     <option value="nenhum">Nenhum grupo</option>
-                </select> -->
+                </select>
                 <div class="decoration"></div>
                 <h4>Servidor</h4>
                 <p>Somente modifique este dado se você souber o que está fazendo.</p>
@@ -556,16 +568,16 @@
                 <li class="ui-li ui-li-static ui-btn-up-c situacao{{situacao}}" class='notrunc'><b>{{nome}}</b> 
 
                           {{#ifCond situacao '==' '-2'}}
-                          (CANCELADO)
+                          (CANC)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '-1'}}
-                          (PENDENTE)
+                          (PEND)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '0'}}
-                          (PRÉ APROVADO)
+                          (PRÉ)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '1'}}
-                          (CONFIRMADO)
+                          (CONF)
                           {{/ifCond}}
                           </li>
                         {{else}}
@@ -643,16 +655,16 @@
                           <li class="ui-li ui-li-static ui-btn-up-c situacao{{situacao}}" class='notrunc'><b>{{titulo}}</b> 
 
                           {{#ifCond situacao '==' '-2'}}
-                          (CANCELADO)
+                          (CANC)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '-1'}}
-                          (PENDENTE)
+                          (PEND)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '0'}}
-                          (PRÉ APROVADO)
+                          (PRÉ)
                           {{/ifCond}}
                           {{#ifCond situacao '==' '1'}}
-                          (CONFIRMADO)
+                          (CONF)
                           {{/ifCond}}
                           </li>
                         {{else}}
@@ -749,11 +761,11 @@
                </div>
                {{#each quartos}}
                    <div id="quarto{{@index}}" style="margin-top:30px;">
-                   <ul data-role="listview" data-filter="true" data-inset="true">
+                   <ul data-role="listview" data-filter="true" data-filter-placeholder="Filtrar cliente..." data-inset="true" id="quartoslist">
                        {{#each this}} 
-                           <li data-role="list-divider">Quarto {{math @index "+" 1}}</li>
+                           <li data-role="list-divider" data-groupoptions="{{idpai}}">Quarto {{math @index "+" 1}}<span style="float:right">{{roomnumber}}</span></li>
                            {{#each clientes}}
-                               <li {{#if @first}}class="ui-btn-active merda"{{/if}}><a data-id="{{id}}" class="paxselecionado" href="#" data-from="#quartos">{{nome}}</a></li>
+                               <li {{#if @first}}class="ui-btn-active merda"{{/if}} data-groupoptions="{{../idpai}}"><a data-id="{{id}}" class="paxselecionado" href="#" data-from="#quartos">{{nome}}</a></li>
                            {{/each}}
                        {{/each}}
                    </ul>
@@ -762,7 +774,7 @@
            </div>
 
         </script>
-
+    
        <!--Bloqueio de Voos-->
        <script id="bloqueios-template" type="text/x-handlebars-template">
           <div data-role="tabs">

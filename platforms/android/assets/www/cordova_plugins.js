@@ -9,7 +9,8 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-whitelist": "1.0.0"
+    "cordova-plugin-whitelist": "1.0.0",
+    "com.mirasense.scanditsdk.plugin": "4.4.2"
 }
 // BOTTOM OF METADATA
 });

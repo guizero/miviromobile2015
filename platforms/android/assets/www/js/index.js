@@ -1,4 +1,4 @@
-var $servidor = "http://www.miviro.com.br/api/v1";
+var $servidor = "http://192.168.1.104:3000/api/v1";
 if (localStorage.getItem('server')) {
     var $servidor = localStorage.getItem('server');
 }
@@ -119,7 +119,7 @@ var app = {
         try {
             if(localStorage.getItem('auth_token')) {
                 next_page = '#principal';                
-                if (localStorage.getItem('gp')) {
+                if ((localStorage.getItem('gp')) && (localStorage.getItem('gp') != "nenhum")) {
                     app.selecionaGrupo(localStorage.getItem('gp'));
                     localStorage.setItem('backhistory', '#grupomenu');
                     next_page = '#grupomenu';
@@ -224,8 +224,6 @@ var app = {
                         },
                         error: function (request,error,a) {
                             // This callback function will trigger on unsuccessful action
-                            console.log(request);
-                            console.log(error);  
                            if (request.status == 401) {
                                alert(jQuery.parseJSON(request.responseText).error);
                               //alert('Usuário ou senha incorretos!');
@@ -317,8 +315,7 @@ var app = {
                 app.criaContaListaPassageiros($this.data('id'));                
                 app.changePage('#contarporlista');
             }
-            if ($this.data('menu') == 'contarporscan') {
-                app.criaContaScan($this.data('id'));                
+            if ($this.data('menu') == 'contarporscan') {                            
                 app.changePage('#contarporscan');
             } 
             if ($this.data('menu') == 'opcionais') {
@@ -347,6 +344,7 @@ var app = {
             else if ($back == '#grupomenu') { $newback = '#grupos'; }
             else if ($back == '#grupos') { $newback = '#principal'; }
             else if ($back == '#quartos') { $newback = '#grupomenu'; }
+            else if ($back == '#opcionais') { $newback = '#grupomenu'; }
             localStorage.setItem('backhistory', $newback);
             app.changePage($back);
         });
@@ -368,7 +366,7 @@ var app = {
         });
 
         $(document).on('click', '.cadastropulseiras', function() {
-            if (localStorage.getItem('gp') == (null || "nenhum")) {
+            if ((localStorage.getItem('gp') == null) || (localStorage.getItem('gp') == ("nenhum")) ) {
                 alert('Deve haver um grupo principal selecionado.');
             } else {                
                 app.criaListaPulseiras(localStorage.getItem('gp'));
@@ -398,6 +396,7 @@ var app = {
         // Ver Opcional
         $(document).on('click', '.opcionalselecionado', function() {
             var $this = $(this);
+            localStorage.setItem('backhistory', "#opcionais");
             app.mostraPedidos($(this).data('grupo-id'), $(this).data('id'), $(this).data('titulo'));       
         });
 
@@ -418,15 +417,19 @@ var app = {
             console.log('recebendopulseira');
             app.recebePulseira();
         });
+
+        // Recebe ids das pulseiras
+        $(document).on('click', '.refreshscan', function() {
+            $('#listcontarporscan').find('[data-id]').show();
+            $('#scaneados').html(0);
+            $('#scantotal').html($('#listcontarporscan').find('[data-id]').length); 
+        });
     },
 
     enviaPulseira: function() {
         var buttonIndex = 1;
         if (buttonIndex == 1) {
-            console.log('abrindo banco de dados')
             database.retrievePulseiras(function(pulseiras) {
-                console.log('essas sao as pulseiras!');
-                console.log(pulseiras);
                 $.ajax({
                     type : 'POST',
                     url : $servidor + '/pulseiras.json',
@@ -452,7 +455,6 @@ var app = {
     recebePulseira: function() {
         var buttonIndex = 1;
         if (buttonIndex == 1) {
-            console.log('abrindo banco de dados')            
                 $.ajax({
                     type : 'GET',
                     url : $servidor + '/pulseiras.json',
@@ -466,7 +468,6 @@ var app = {
                         database.db.transaction(
                         function(tx) {
                             query = "UPDATE clientes SET scanid='"+item.scanid+"' WHERE id="+item.id+"; ";
-                            console.log(query);
                             tx.executeSql(query)       
                          
                         },
@@ -494,7 +495,8 @@ var app = {
         app.carregaInfoGrupos(id, "quartos", "#quartos-template", "#quartos");
         app.carregaInfoGrupos(id, "daybydays", "#daybyday-template", "#daybyday");
         app.carregaInfoGrupos(id, "bloqueios", "#bloqueios-template", "#bloqueios");
-        app.criaOpcionais(id);                
+        app.criaOpcionais(id);
+        app.criaContaScan(id);          
 
         localStorage.setItem('backhistory', '#grupos');
         app.changePage('#grupomenu');
@@ -510,8 +512,6 @@ var app = {
                 tipo : localStorage.getItem('user_or_admin')
             }
         }).success(function jsSuccess(data, textStatus, jqXHR){
-            console.log('chegou nas temporadas');
-            console.log(data);
             $.each(data.data.temporadas, function(index,item) {
                 $('#temporada-select')
                   .append($('<option>', { value : item.id })
@@ -537,14 +537,11 @@ var app = {
     },
 
     criaListaGrupos: function() {
-        console.log('Rendering list using local SQLite data...');
         database.retrieveGrupos(function(grupos) {
             var source   = $("#grupos-template").html();
             var template = Handlebars.compile(source);
             grupos = {'grupos' : grupos };
             var html = template(grupos);
-            console.log('chegou aqui');
-            console.log(grupos);
             $("#grupos #articleHandlebars").html(html);   
             $("#grupos #listview-content").trigger('create');  
             $("#grupos #listview-page").trigger('pagecreate');
@@ -555,14 +552,11 @@ var app = {
     },
 
     criaListaPassageiros: function(grupo) {
-        console.log('Rendering list using local SQLite data...');
         database.retrievePassageiros(grupo, function(passageiros) {
             var source   = $("#passageiros-template").html();
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
             var html = template(passageiros);
-            console.log('chegou aqui');
-            console.log(passageiros);
             $("#listapassageirosdogrupo #articleHandlebars").html(html);   
             $("#listapassageirosdogrupo #listview-content").trigger('create');  
             $("#listapassageirosdogrupo #listview-page").trigger('pagecreate');
@@ -573,14 +567,11 @@ var app = {
     },
 
     criaContaListaPassageiros: function(grupo) {
-        console.log('Rendering list using local SQLite data...');
         database.retrievePassageiros(grupo, function(passageiros) {
             var source   = $("#contarporlista-template").html();
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
             var html = template(passageiros);
-            console.log('chegou aqui');
-            console.log(passageiros);
             $("#contarporlista #articleHandlebars").html(html);   
             $("#contarporlista #listview-content").trigger('create');  
             $("#contarporlista #listview-page").trigger('pagecreate');
@@ -591,14 +582,11 @@ var app = {
     },
 
     criaListaPulseiras: function(grupo) {
-        console.log('Rendering list using local SQLite data...');
         database.retrievePassageiros(grupo, function(passageiros) {
             var source   = $("#cadastropulseiras-template").html();
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
             var html = template(passageiros);
-            console.log('chegou aqui');
-            console.log(passageiros);
             $("#cadastropulseiras #articleHandlebars").html(html);   
             $("#cadastropulseiras #listview-content").trigger('create');  
             $("#cadastropulseiras #listview-page").trigger('pagecreate');
@@ -609,7 +597,6 @@ var app = {
     },
 
     criaContaScan: function(grupo) {
-        console.log('Rendering list using local SQLite data...');
         database.retrievePassageiros(grupo, function(passageiros) {
             var source   = $("#contarporscan-template").html();
             var template = Handlebars.compile(source);
@@ -627,13 +614,11 @@ var app = {
     },
 
     criaOpcionais: function(grupo) {
-        console.log('Buscando Opcionais para o grupo...');
         database.retrieveOpcionais(grupo, "", "opcionais", function(opcionais) {
             var source   = $("#opcionaisgrupo-template").html();
             var template = Handlebars.compile(source);
             opcionais = {'opcionais' : opcionais };
             var html = template(opcionais);  
-            console.log(opcionais);          
             $("#opcionais #articleHandlebars").html(html);   
             $("#opcionais #listview-content").trigger('create');  
             $("#opcionais #listview-page").trigger('pagecreate');
@@ -653,7 +638,6 @@ var app = {
             var template = Handlebars.compile(source);
             var html = template(grupo);
             $('.nomegrupo').text(grupo.nome);
-            console.log(grupo);
             $("#grupomenu #articleHandlebars").html(html);   
             $("#grupomenu #listview-content").trigger('create');  
             $("#grupomenu #listview-page").trigger('pagecreate');
@@ -663,9 +647,8 @@ var app = {
         });        
     },
 
-    mostraPassageiro: function(passageiro,backhistory) {
-        console.log('Rendering list using local SQLite data...');
-        database.retrievePassageiro(passageiro, function(passageiro) {
+    mostraPassageiro: function(paxid,backhistory) {
+        database.retrievePassageiro(paxid, function(passageiro) {
             if (passageiro == "inexistente") {
                 alert('passageiro inexistente');
                 
@@ -678,11 +661,11 @@ var app = {
 
                 // Carrego as outras infos... não achei modo mais esperto
                 //app.carregaResumoFicha(passageiro.id);
-                app.carregaInfoPax(passageiro.id, "resumo_medico", "#resumoficha-template", "#articleHandlebarsFicha");          
-                app.carregaInfoPax(passageiro.id, "responsaveis", "#responsaveis-template", "#articleHandlebarsResponsaveis");
-                app.carregaInfoPax(passageiro.id, "contatos", "#contatos-template", "#articleHandlebarsContatos");
-                app.carregaInfoPax(passageiro.id, "enderecos", "#enderecos-template", "#articleHandlebarsEnderecos");
-                app.carregaInfoPax(passageiro.id, "opcionais", "#opcionais-template", "#articleHandlebarsOpcionais");
+                app.carregaInfoPax(paxid, "resumo_medico", "#resumoficha-template", "#articleHandlebarsFicha");          
+                app.carregaInfoPax(paxid, "responsaveis", "#responsaveis-template", "#articleHandlebarsResponsaveis");
+                app.carregaInfoPax(paxid, "contatos", "#contatos-template", "#articleHandlebarsContatos");
+                app.carregaInfoPax(paxid, "enderecos", "#enderecos-template", "#articleHandlebarsEnderecos");
+                app.carregaInfoPax(paxid, "opcionais", "#opcionais-template", "#articleHandlebarsOpcionais");
           
                 localStorage.setItem('backhistory', '#listapassageirosdogrupo');
                 if (backhistory) {
@@ -694,7 +677,6 @@ var app = {
     },
 
     mostraPedidos: function(grupo, opcional,titulo) {
-        console.log('Rendering list using local SQLite data...');
         $('#pedidos .header-title').html(titulo);
         $('#pedidos .titulo').html(titulo);
         database.retrieveOpcionais(grupo, opcional, "pedidos", function(pedidos) {            
@@ -742,14 +724,12 @@ var app = {
     // wrapper = onde o template do handlebars deve ser jogado
 
     carregaInfoPax: function(passageiro, db, hbtemplate, wrapper ) {
-        console.log('Rendering list using local SQLite datassss...');
         database.retrieveForPax(passageiro, db, function(resposta) {
             var source   = $(hbtemplate).html();
             var template = Handlebars.compile(source);
             resposta[db] = resposta;
             var html = template(resposta);
 
-            console.log('chegou aqui');
             $("#passageiro-view "+wrapper.toString()).html(html);   
             $("#passageiro-view #listview-content").trigger('create');  
             $("#passageiro-view #listview-page").trigger('pagecreate');
@@ -758,7 +738,7 @@ var app = {
 
             if (db == "resumo_medico") {
                 $('#passageiro-view .ui-body-inherit').each(function() {
-                    if ($(this).text() == "true") { $(this).replaceWith('<li class="ui-li ui-li-static ui-btn-up-c ui-body-inherit ui-last-child">Sim</li>'); } 
+                    if ($(this).text() == "true") { $(this).replaceWith('<li class="ui-li ui-li-static ui-btn-up-c ui-body-inherit ui-last-child">Sim/Yes</li>'); } 
                 });
             }
             
@@ -766,13 +746,12 @@ var app = {
     },
 
     buscaPassageiro: function(passageiro, db) {
-        console.log('Rendering list using local SQLite datassss...');
+        
         database.retrieveForPax(passageiro, "buscapax", function(resposta) {
             var source   = $("#buscapax-template").html();
             var template = Handlebars.compile(source);
             resposta[db] = resposta;
             var html = template(resposta);
-            console.log(resposta);
 
             $("#sidesearch #articleHandlebars").html(html);   
             $("#sidesearch #listview-content").trigger('create');  
@@ -784,7 +763,6 @@ var app = {
     },
 
     criaGPConfig: function() {
-        console.log('Rendering list using local SQLite data...');
         database.retrieveGrupos(function(grupos) {
             $.each(grupos, function(index,item) {
                 $('#configGP')
@@ -804,12 +782,10 @@ var database = {
     initialize: function(callback) {
         var self = this;
         this.db = window.openDatabase("miviromobiledb", "1.0", "Database do Miviro Mobile", 200000);
-        console.log('Banco de Dados Aberto!');
         
     },
 
     createTables: function(callback) {
-        console.log('Creating Tables');
         this.db.transaction(
             function(tx) {
                 var sql =
@@ -1027,11 +1003,9 @@ var database = {
                 var sql =
                     "INSERT OR REPLACE INTO grupos (id, nome, retorno, partida) " +
                     "VALUES (?, ?, ?, ?)";
-                console.log('Inserindo ou atualizendo no banco de dados local - Grupos:');
                 var e;
                 for (var i = 0; i < l; i++) {
                     e = grupos[i];
-                    console.log(e.id + ' ' + e.nome + ' ' + e.retorno + ' ' + e.partida);
                     var params = [e.id, e.nome, e.retorno, e.partida];
                     tx.executeSql(sql, params);
                 }
@@ -1072,9 +1046,6 @@ var database = {
                         var sql =
                             "INSERT OR REPLACE INTO resumo_medico (cliente_id, titulo, descricao) " +
                             "VALUES (?, ?, ?)";
-                        console.log('Inserindo ou atualizendo no banco de dados local:');
-                        
-                        console.log(cliente + ' ' + titulo + ' ' + descricao);
                         var params = [cliente, titulo, descricao];
                         tx.executeSql(sql, params);
                     });
@@ -1094,7 +1065,6 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO responsaveis (cliente_id, nome) " +
                         "VALUES (?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     $.each(responsaveis, function (a,b) {
                         var params = [cliente, b.nome_passaporte];
                         tx.executeSql(sql, params);
@@ -1115,7 +1085,6 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO enderecos (cliente_id, endereco) " +
                         "VALUES (?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     $.each(enderecos, function (a,b) {
                         var params = [cliente, b];
                         tx.executeSql(sql, params);
@@ -1136,7 +1105,6 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO contatos (cliente_id, de_quem, tipo, valor) " +
                         "VALUES (?, ?, ?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     $.each(contatos, function (a,b) {
                         var params = [cliente, b.de_quem, b.tipo, b.valor];
                         tx.executeSql(sql, params);
@@ -1149,16 +1117,19 @@ var database = {
 
         console.log('Importando Opcionais / Importing Opcionais');
         var opcionais_por_grupo = data.data.opcionais;
+        console.log(opcionais_por_grupo);
 
         this.db.transaction(
             function(tx) {
-                $.each(opcionais_por_grupo, function(grupo,opcionais) {                 
+                $.each(opcionais_por_grupo, function(grupo,opcionais) {
+                console.log(grupo);               
                     var sql =
                         "INSERT OR REPLACE INTO opcionais (id, grupo_id, titulo, preco, moeda) " +
                         "VALUES (?, ?, ?, ?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     $.each(opcionais, function (a,b) {
+                        console.log(sql);
                         var params = [b.id, grupo, b.titulo, b.preco, b.moeda];
+                        console.log(params);
                         tx.executeSql(sql, params);
                     });                      
                         
@@ -1176,7 +1147,6 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO pedidos (grupo_id, cliente_id, opcional_id, situacao) " +
                         "VALUES (?, ?, ?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     $.each(pedidos, function (a,b) {
                         var params = [grupo, b.cliente_id, b.produto_id, b.situacao];
                         tx.executeSql(sql, params);
@@ -1198,14 +1168,11 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO daybydays (grupo_id, jsonData) " +
                         "VALUES (?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     var e;
-                    console.log(jsonData);
                     for (var i = 0; i < l; i++) {
                         var params = [grupo, JSON.stringify(jsonData)];
                         tx.executeSql(sql, params);
                     }
-                    console.log('Synchronization complete (' + l + ' items synchronized)');
                 });
             },
             this.txErrorHandler
@@ -1229,7 +1196,6 @@ var database = {
                         var params = [grupo, JSON.stringify(jsonData)];
                         tx.executeSql(sql, params);
                     }
-                    console.log('Synchronization complete (' + l + ' items synchronized)');
                 });
             },
             this.txErrorHandler
@@ -1245,13 +1211,11 @@ var database = {
                     var sql =
                         "INSERT OR REPLACE INTO bloqueios (grupo_id, jsonData) " +
                         "VALUES (?, ?)";
-                    console.log('Inserindo ou atualizendo no banco de dados local:');
                     var e;
                     for (var i = 0; i < l; i++) {
                         var params = [grupo, JSON.stringify(jsonData)];
                         tx.executeSql(sql, params);
                     }
-                    console.log('Synchronization complete (' + l + ' items synchronized)');
                 });
             },
             this.txErrorHandler
@@ -1263,7 +1227,6 @@ var database = {
         this.db.transaction(
             function(tx) {
                 var sql = "SELECT * FROM grupos";
-                console.log('Local SQLite database: "SELECT * FROM grupos"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         var len = results.rows.length,
@@ -1272,8 +1235,6 @@ var database = {
                         for (; i < len; i = i + 1) {
                             grupos[i] = results.rows.item(i);
                         }
-                        console.log(len + ' rows found');
-                        console.log(grupos);
                         callback(grupos);
                     }
                 );
@@ -1285,7 +1246,6 @@ var database = {
         this.db.transaction(
             function(tx) {
                 var sql = " SELECT * FROM `clientes` WHERE `grupo_id` LIKE '"+grupo+"' ORDER BY `nome` ASC";
-                console.log('Local SQLite database: "SELECT * FROM grupos"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         var len = results.rows.length,
@@ -1294,8 +1254,6 @@ var database = {
                         for (; i < len; i = i + 1) {
                             passageiros[i] = results.rows.item(i);
                         }
-                        console.log(len + ' rows found');
-                        console.log(passageiros);
                         callback(passageiros);
                     }
                 );
@@ -1304,16 +1262,12 @@ var database = {
     },
 
     retrieveOpcionais: function(grupo, opcional, tipo, callback) {
-        console.log(grupo);
-        console.log(tipo);
-        console.log(opcional);
         this.db.transaction(
             function(tx) {
-                var sql = " SELECT * FROM `opcionais` WHERE `grupo_id` LIKE '"+grupo+"' ORDER BY `titulo` ASC";
+                var sql = " SELECT * FROM opcionais WHERE grupo_id LIKE "+grupo+" ORDER BY titulo ASC";
                 if (tipo == "pedidos") {
                     var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.grupo_id LIKE '"+grupo+"' ORDER BY pedidos.situacao DESC";
                 }
-                console.log('Buscando os opcionais no banco de dados"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         var len = results.rows.length,
@@ -1322,9 +1276,6 @@ var database = {
                         for (; i < len; i = i + 1) {
                             passageiros[i] = results.rows.item(i);
                         }
-                        console.log(len + ' rows found');
-                        console.log(passageiros);
-                        console.log('cruzeiraooo');
                         callback(passageiros);
                     }
                 );
@@ -1336,11 +1287,8 @@ var database = {
         this.db.transaction(
             function(tx) {
                 var sql = "SELECT c.nome, c.data_nascimento, c.n_passaporte, c.cpf, grupos.nome AS gruponome FROM `clientes` AS c INNER JOIN grupos ON c.grupo_id = grupos.id WHERE c.id LIKE '"+pax+"';";
-                console.log('Local SQLite database: "SELECT * FROM grupos"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
-                        console.log('results');
-                        console.log(results);
                         if (results.rows.length > 0) {
                             passageiro = results.rows.item(0);
                         }
@@ -1358,14 +1306,13 @@ var database = {
     retrieveForPax: function(pax, db, callback) {
         this.db.transaction(
             function(tx) {                
-                var sql = " SELECT * FROM `"+db+"` WHERE `cliente_id` LIKE '"+pax+"'";
+                var sql = " SELECT * FROM "+db+" WHERE cliente_id LIKE "+pax+"";
                 if (db == "opcionais"){
                     var sql = " SELECT pedidos.situacao, opcionais.titulo FROM 'pedidos' INNER JOIN 'clientes' on pedidos.cliente_id = clientes.id INNER JOIN 'opcionais' ON pedidos.opcional_id = opcionais.id WHERE `cliente_id` LIKE '"+pax+"' ORDER BY pedidos.situacao DESC";
                 }
                 if (db == "buscapax"){
                     var sql = " SELECT * FROM clientes WHERE nome LIKE '%"+pax+"%' ";
                 }
-                console.log('Local SQLite database: "SELECT * FROM grupos"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         var len = results.rows.length,
@@ -1383,7 +1330,6 @@ var database = {
 
 
     retrieveForGruposJson: function(grupo, db, callback) {
-        console.log('usando retrieve for grupos json');
         var $campo = "grupo_id";
         if (db == "grupos") { $campo = "id"; }
         this.db.transaction(
@@ -1400,12 +1346,10 @@ var database = {
     },
 
     retrievePulseiras: function(callback) {
-        console.log('retrievePulseiras');
         var grupo = localStorage.getItem('gp');
         this.db.transaction(
             function(tx) {
                 var sql = " SELECT id, scanid FROM `clientes` WHERE `grupo_id` LIKE '"+grupo+"' AND NOT `scanid` = '';";
-                console.log('Local SQLite database: "SELECT * FROM grupos"');
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         
@@ -1426,13 +1370,9 @@ var database = {
 
 function success(resultArray) {
 
-    console.log('tentando primeiro teste');
     database.db.transaction(function(tx) {
             query = "SELECT * FROM clientes WHERE 1=1 AND scanid LIKE '"+resultArray[0]+"'  ORDER BY id ASC LIMIT 0, 50000;";
-            console.log(query);
             tx.executeSql(query, [], function(tx, results){
-                console.log('resultados da query');
-                console.log(results);
                 app.setMainBackHistory();
                 if (results.rows.length > 0) {
                     app.mostraPassageiro(results.rows.item(0).id);    
@@ -1480,13 +1420,13 @@ function success2(resultArray) {
     cliente = resultArray[0].split("|");
     passageiroid = cliente[1];
     if ($('#listcontarporscan').find("[data-id = '"+passageiroid+"']").length > 0) {
-        $('#listcontarporscan').find("[data-id = '"+passageiroid+"']").remove();
+        $('#listcontarporscan').find("[data-id = '"+passageiroid+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
         scan2();
     }
     if ($('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").length > 0) {
-        $('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").remove();
+        $('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
         scan2();
@@ -1514,13 +1454,10 @@ function scancadastro() {
 
 function cadastrascan(resultArray) {
     codigo = resultArray[0];
-    console.log(codigo);
-    console.log(localStorage.getItem('cliente_scan_id'));
 
     database.db.transaction(
         function(tx) {
             query = "UPDATE clientes SET scanid='"+codigo+"' WHERE id="+localStorage.getItem('cliente_scan_id')+"; ";
-            console.log(query);
             tx.executeSql(query)       
          
         },

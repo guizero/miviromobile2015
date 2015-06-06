@@ -1449,7 +1449,8 @@ function scancadastro() {
                  ["T9wvdOtuEeOd16y4en1qM7Gex2FyAInOBBaHuIEVu1o",
                   {"beep": true,
                   "1DScanning" : true,
-                  "2DScanning" : true}]);
+                  "2DScanning" : true,
+                  "searchBar"  : true}]);
 }
 
 function cadastrascan(resultArray) {

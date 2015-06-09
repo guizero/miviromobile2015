@@ -459,13 +459,26 @@ var app = {
 
         $(document).on('click', '.deposita', function() {
             console.log($('#babecalho').data('id'));
-            deposita($('#babecalho').data('id'));            
+            deposita($('#babecalho').data('id'));
         });
 
         $(document).on('click', '.saca', function() {
             saca($('#babecalho').data('id'));
             console.log($('#babecalho').data('id'));
         });
+
+        $(document).on('click', '.abrepopdeletasaque', function() {
+            localStorage.saqueadeletar = $(this).data('id');
+            $('#popupDialog').popup("open", {
+                "transition": "pop"
+            });
+        });
+
+        $(document).on('click', '.apagasaque', function() {
+            apagasaque(localStorage.saqueadeletar, $('#babecalho').data('id'));
+        });
+
+        
     },
 
     enviaPulseira: function() {
@@ -1631,13 +1644,14 @@ function cadastrascan(resultArray) {
 function deposita(pax) {
     console.log(pax);
     valor = $('#adepositar:visible').val();
+    envelope = $('#aenvelopar:visible').val();
     if (valor == "") {
         alert('Favor informar o valor');
         return false
     }
     database.db.transaction(
         function(tx) {
-            query = "UPDATE banquinho SET deposito='"+valor+"' WHERE cliente_id="+pax+"; ";
+            query = "UPDATE banquinho SET deposito='"+valor+"', envelope='"+envelope+"' WHERE cliente_id="+pax+"; ";
             tx.executeSql(query)         
         },
         database.txErrorHandler
@@ -1698,4 +1712,17 @@ function continuasaldo(pax, saldo) {
     $('#popupsaque').popup( "close" );
     app.mostraPassageiro(pax);
     app.abreBanquinho(pax);
+}
+
+function apagasaque(saque, pax) {
+
+    database.db.transaction(
+        function(tx) {
+            query = "DELETE FROM saques WHERE id='"+saque+"';";
+            tx.executeSql(query);
+        },
+        database.txErrorHandler
+    );
+    $('#popupDialog').popup( "close" );
+    atualizasaldo(pax);
 }

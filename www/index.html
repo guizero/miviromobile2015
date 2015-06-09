@@ -626,22 +626,39 @@
         <script id="saques-template" type="text/x-handlebars-template">
             <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="false" data-inset="true" data-corners="false">
               {{#each saques}} 
-                <li><b>Valor:</b> US$ <span class='saquevalor'>{{valor}}</span><span style="float:right"><b>Data:</b> {{pegadata data}}</span></li>
+                <li><h5><b>Valor:</b> US$ <span class='saquevalor'>{{valor}}</span> - <b>Data:</b> {{pegadata data}}<span style='float:right;' class='removesaque'><a href="javascript:void(0)" class='abrepopdeletasaque' data-rel="popup" data-position-to="window" data-transition="pop" data-id='{{id}}'><i class='fa fa-minus-circle' style=' color:red;'></i></a></h5></li>
+              {{else}}
+                <li>Nenhum saque ainda efetuado</li>
               {{/each}}              
             </ul>
+            <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" data-corners="false" data-shadow="false" data-border="true" style="max-width:400px;">
+                <div data-role="header" data-theme="b">
+                    <h2 class="header-title">Apagar saque</h2>
+                </div>
+                <div role="main" class="ui-content">
+                    <h3 class="ui-title">Você deseja apagar este saque?</h3>
+                <p>Esta ação não pode ser desfeita.</p>
+                    <a href="javascript:void(0)" data-rel="back"><button data-role="none" class="nightly-button" data-theme="b">Cancelar</button></a>
+                    <a href="javascript:void(0)" data-rel="back" data-transition="flow"><button data-role="none" class="nightly-button apagasaque" data-theme="b"><i class="fa fa-trash-o"></i>Apagar</button></a>
+                </div>
+            </div>
         </script>
 
         <script id="banquinho-template" type="text/x-handlebars-template">
-            Total Depositado:<span id="totaldepositado">{{banquinho.0.deposito}}</span><br><a href="#popupdeposito" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-check ui-btn-icon-left ui-btn-a" data-transition="pop">Depósito Inicial</a>
-            Saldo: {{banquinho.0.saldo}}
-            <a href="#popupsaque" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-check ui-btn-icon-left ui-btn-a" data-transition="pop">Novo saque</a>
+            <a href="#popupdeposito" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-a" data-transition="pop"><i class="fa fa-university" style="float:left"></i>Depósito Inicial</a>
+            <a href="#popupsaque" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b" data-transition="pop"><i class="fa fa-money" style="float:left"></i>Novo saque</a>
+            <h4 class="ui-bar ui-bar-c">Depósito: <span>US$</span> <span id="totaldepositado">{{banquinho.0.deposito}}</span><span style='float:right'><b>Saldo:</b> US$ {{banquinho.0.saldo}}</span><br>Conta: {{banquinho.0.envelope}}</h4>
+            <h4 class="ui-bar ui-bar-b">Lista de saques:</h4>
+            
 
             <div data-role="popup" id="popupdeposito" data-theme="a" class="ui-corner-all">
                 <form>
                     <div style="padding:30px 20px; margin: -70px 0 -40px 0">
                         <h3>Depósito</h3>
                         <label for="un" class="ui-hidden-accessible">Valor:</label>
-                        <input type="text" name="user" id="adepositar" value="" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <input type="text" name="user" id="adepositar" value="{{banquinho.0.deposito}}" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <label for="un" class="ui-hidden-accessible">Conta:</label>
+                        <input type="text" name="user" id="aenvelopar" value="{{banquinho.0.envelope}}" placeholder="Número..." data-theme="a" data-clear-btn="true">
                         <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check deposita" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
                     </div>
                 </form>

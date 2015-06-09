@@ -37,6 +37,7 @@
             
         <!-- Owl Carousel -->
         <script src="js/owl.carousel.min.js"></script>
+        <script src="js/strftime.js"></script>
 
         <title>Miviro Mobile 1.0</title>
     </head>
@@ -218,6 +219,8 @@
             <div data-role="content" id="listview-content">                 
                <div class="decoration"></div>  
                   <div id="articleHandlebars" data-demo-html="true"></div>
+
+                  <div id="articleHandlebarsBanquinho" data-demo-html="true"></div>
                
                   <div id="articleHandlebarsResponsaveis" data-demo-html="true"></div>
                 
@@ -229,6 +232,31 @@
                 
                   <div id="articleHandlebarsFicha" data-demo-html="true"></div>
                   
+            </div><!-- /content -->      
+            
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+         <!-Banquinho View->
+        <div data-role="page" id="banquinho-view" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Banquinho</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <div class="decoration"></div>  
+                  <div id="articleHandlebars" data-demo-html="true"></div>               
+                  <div id="articleHandlebarsBanquinho" data-demo-html="true"></div>
+                  <div id="articleHandlebarsSaque" data-demo-html="true"></div>                            
             </div><!-- /content -->      
             
             <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
@@ -415,7 +443,7 @@
             <div data-role="content" id="listview-content">                 
                <h4><span class="nomegrupo">Grupo Vermelho</span> > Opcionais > <span class="titulo">Opcional</span></h4>
                <div class="decoration"></div>
-               <a href="#" class="ui-btn ui-btn-b" ><i class="fa fa-barcode contarporscan"></i>Contar por scan</a>
+               <a href="#" class="ui-btn ui-btn-b scandinamico" ><i class="fa fa-barcode"></i>Contar por scan</a>
                <div id="articleHandlebars" data-demo-html="true"></div> 
            </div>
 
@@ -587,6 +615,50 @@
             </ul>
         </script>
 
+        <script id="detalhebanquinho-template" type="text/x-handlebars-template">
+            <div id="babecalho" data-id={{id}}>
+                <h5 style="margin-bottom:-20px">{{gruponome}}</h5>
+                <h3 style="margin-bottom:-20px">{{nome}}</h4>
+                <h5>Banquinho</h5>
+            </div>
+        </script>
+
+        <script id="saques-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="false" data-inset="true" data-corners="false">
+              {{#each saques}} 
+                <li><b>Valor:</b> US$ <span class='saquevalor'>{{valor}}</span><span style="float:right"><b>Data:</b> {{pegadata data}}</span></li>
+              {{/each}}              
+            </ul>
+        </script>
+
+        <script id="banquinho-template" type="text/x-handlebars-template">
+            Total Depositado:<span id="totaldepositado">{{banquinho.0.deposito}}</span><br><a href="#popupdeposito" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-check ui-btn-icon-left ui-btn-a" data-transition="pop">Depósito Inicial</a>
+            Saldo: {{banquinho.0.saldo}}
+            <a href="#popupsaque" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-check ui-btn-icon-left ui-btn-a" data-transition="pop">Novo saque</a>
+
+            <div data-role="popup" id="popupdeposito" data-theme="a" class="ui-corner-all">
+                <form>
+                    <div style="padding:30px 20px; margin: -70px 0 -40px 0">
+                        <h3>Depósito</h3>
+                        <label for="un" class="ui-hidden-accessible">Valor:</label>
+                        <input type="text" name="user" id="adepositar" value="" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check deposita" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
+                    </div>
+                </form>
+            </div>
+
+            <div data-role="popup" id="popupsaque" data-theme="a" class="ui-corner-all">
+                <form>
+                    <div style="padding:30px 20px; margin: -70px 0 -40px 0">
+                        <h3>Novo saque</h3>
+                        <label for="un" class="ui-hidden-accessible">Valor:</label>
+                        <input type="text" name="user" id="asacar" value="" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check saca" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
+                    </div>
+                </form>
+            </div>
+        </script>
+
         <!-- Detalhe Passageiro -->
         <script id="detalhepax-template" type="text/x-handlebars-template">
             <div id="cabecalho">
@@ -619,7 +691,7 @@
                             <li class="ui-li ui-li-static ui-btn-up-c">Não informado</li>
                         {{/if}}            
                     </ul>  
-                </div>  
+                </div>                
         </script>
 
         <script id="responsaveis-template" type="text/x-handlebars-template">
@@ -633,6 +705,19 @@
                         {{/each}}                
                     </ul>
                 </div>
+        </script>
+
+        <script id="banquinhoresumo-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                   <h3><i class="fa fa-money"></i>Banquinho</h3>             
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                       <li data-role="list-divider">Total depositado</li>
+                       <li class="ui-li ui-li-static ui-btn-up-c">US$ {{banquinho.0.deposito}}</li>
+                       <li data-role="list-divider">Saldo</li>
+                       <li class="ui-li ui-li-static ui-btn-up-c">US$ {{banquinho.0.saldo}}</li>
+                       <a href="javascript:void(0)" class="ui-btn ui-corner-all banquinho" data-id="{{banquinho.0.cliente_id}}">Gerenciar Banquinho</a>
+                   </ul>  
+               </div>    
         </script>
 
         <script id="enderecos-template" type="text/x-handlebars-template">

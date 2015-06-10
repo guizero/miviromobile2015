@@ -1,4 +1,4 @@
-var $servidor = "http://192.168.1.104:3000/api/v1";
+var $servidor = "http://www.miviro.com.br/api/v1";
 if (localStorage.getItem('server')) {
     var $servidor = localStorage.getItem('server');
 }
@@ -173,6 +173,12 @@ var app = {
         } else {
             return alert('Selecione a temporada');
         }
+
+        $.mobile.loading( "show", {
+          text: "Atualizando...",
+          textVisible: true,
+          theme: "a"
+        });
         
         $.ajax({
             type : 'GET',
@@ -530,6 +536,7 @@ var app = {
 
                     });
                     $('.cadastropulseiras').trigger("click");
+                    app.criaContaScan(localStorage.gp);
                     alert('Atualizado com sucesso');
                     
                     
@@ -566,15 +573,18 @@ var app = {
                 tipo : localStorage.getItem('user_or_admin')
             }
         }).success(function jsSuccess(data, textStatus, jqXHR){
+            $.mobile.loading( "hide" );
+            console.log(data);
             $.each(data.data.temporadas, function(index,item) {
                 $('#temporada-select')
                   .append($('<option>', { value : item.id })
                   .text(item.nome));
             });
             if (data.data.count == 1){
-                alert('Você conectou com sucesso!');
+                alert('Você conectou com sucesso! Aguarde enquanto sincronizamos os dados.');
                 if (localStorage.getItem('user_or_admin') == "user") {
                      localStorage.setItem('gp', data.data.temporadas[0].grupo_guia);
+                     app.mobileLoading();
                 }
                 app.sincroniza(data.data.temporadas[0].id);
                
@@ -655,7 +665,9 @@ var app = {
             var source   = $("#contarporscan-template").html();
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
+            console.log(passageiros);
             $('#scantotal').text(passageiros.passageiros.length);
+            $('#scaneados').text(0);
             var html = template(passageiros);            
             $("#contarporscan #articleHandlebars").html(html);   
             $("#contarporscan #listview-content").trigger('create');  
@@ -674,6 +686,7 @@ var app = {
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
             $('#scantotal').text(passageiros.passageiros.length);
+            $('#scaneados').text(0);
             var html = template(passageiros);            
             $("#contarporscan #articleHandlebars").html(html);   
             $("#contarporscan #listview-content").trigger('create');  
@@ -1439,7 +1452,7 @@ var database = {
                     var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.grupo_id LIKE '"+grupo+"' ORDER BY pedidos.situacao DESC";
                 }
                 if (tipo == "dinamico") {
-                    var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.situacao LIKE 1 ORDER BY clientes.nome ASC";
+                    var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id, clientes.scanid FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.situacao LIKE 1 ORDER BY clientes.nome ASC";
                 }
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
@@ -1564,7 +1577,7 @@ function success(resultArray) {
 }
 
 function failure(error) {
-    alert("Failed: " + error);
+
 }
 
 function scan() {
@@ -1585,7 +1598,8 @@ $('#target').tap(function() {
             $('#output').html(0);
 });
 
-$('#contarscanbutton').tap(function() {
+
+$(document).on('click', '#contarscanbutton', function() {
     scan2();
 });
 
@@ -1596,13 +1610,11 @@ function success2(resultArray) {
         $('#listcontarporscan').find("[data-id = '"+passageiroid+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
-        scan2();
     }
     if ($('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']:visible").length > 0) {
         $('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
-        scan2();
     }
 
 }
@@ -1637,6 +1649,7 @@ function cadastrascan(resultArray) {
         database.txErrorHandler
     );
     $('.cadastropulseiras').trigger("click");
+    app.criaContaScan(localStorage.gp);
     alert('cadastrado com sucesso');   
 }
 

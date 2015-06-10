@@ -387,11 +387,11 @@
                 </div>
                 <div class="ui-grid-b ui-responsive" style="">
                     <a href="#" class="ui-shadow ui-btn ui-corner-all backbutton"  data-theme="b" ><i class="fa fa-chevron-left"></i></a>
-                    <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-transition="pop" data-theme="b"><i class="fa fa-refresh"></i></a>
+                    <a href="#popupDialogrefresh" data-rel="popup" data-position-to="window" data-role="button" data-transition="pop" data-theme="b"><i class="fa fa-refresh"></i></a>
                     <a href="#" class="ui-shadow ui-btn ui-corner-all" data-theme="b" style="float:right" id="contarscanbutton" ><i class="fa fa-barcode"></i>ESCANEAR</a>
                 </div>
             </div>
-            <div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+            <div data-role="popup" id="popupDialogrefresh" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
                 <div data-role="header" data-theme="b" class="ui-corner-top">
                     <h1>Reiniciar a contagem</h1>
                 </div>
@@ -576,7 +576,7 @@
         <script id="contarporscan-template" type="text/x-handlebars-template">
             <ol id="listcontarporscan" data-role="listview">
               {{#each passageiros}} 
-                <li data-id="{{id}}" data-scan-id="{{scanid}}">{{nome}} - {{id}}</li>
+                <li data-id="{{id}}" data-scan-id="{{scanid}}">{{nome}}</li>
               {{/each}}              
             </ol>
         </script>
@@ -652,7 +652,6 @@
             
 
             <div data-role="popup" id="popupdeposito" data-theme="a" class="ui-corner-all">
-                <form>
                     <div style="padding:30px 20px; margin: -70px 0 -40px 0">
                         <h3>Depósito</h3>
                         <label for="un" class="ui-hidden-accessible">Valor:</label>
@@ -661,18 +660,15 @@
                         <input type="text" name="user" id="aenvelopar" value="{{banquinho.0.envelope}}" placeholder="Número..." data-theme="a" data-clear-btn="true">
                         <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check deposita" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
                     </div>
-                </form>
             </div>
 
-            <div data-role="popup" id="popupsaque" data-theme="a" class="ui-corner-all">
-                <form>
+            <div data-role="popup" id="popupsaque" data-theme="a" class="ui-corner-all">                
                     <div style="padding:30px 20px; margin: -70px 0 -40px 0">
                         <h3>Novo saque</h3>
                         <label for="un" class="ui-hidden-accessible">Valor:</label>
                         <input type="text" name="user" id="asacar" value="" placeholder="USD" data-theme="a" data-clear-btn="true">
                         <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check saca" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
-                    </div>
-                </form>
+                    </div>                
             </div>
         </script>
 

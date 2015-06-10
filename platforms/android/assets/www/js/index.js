@@ -1,4 +1,4 @@
-var $servidor = "http://192.168.1.104:3000/api/v1";
+var $servidor = "http://www.miviro.com.br/api/v1";
 if (localStorage.getItem('server')) {
     var $servidor = localStorage.getItem('server');
 }
@@ -59,6 +59,14 @@ var app = {
                 "/": lvalue / rvalue,
                 "%": lvalue % rvalue
             }[operator];
+        });
+
+        Handlebars.registerHelper("pegadata", function(data) {
+            var s = "";
+            var d = new Date();
+            d.setTime(data);
+            
+            return d.strftime('%d/%m/%Y');
         });
 
         Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
@@ -165,6 +173,12 @@ var app = {
         } else {
             return alert('Selecione a temporada');
         }
+
+        $.mobile.loading( "show", {
+          text: "Atualizando...",
+          textVisible: true,
+          theme: "a"
+        });
         
         $.ajax({
             type : 'GET',
@@ -317,6 +331,10 @@ var app = {
             }
             if ($this.data('menu') == 'contarporscan') {
                 app.changePage('#contarporscan');
+                if (localStorage.getItem('refreshscan') == 'true') {
+                    app.criaContaScan($this.data('id'));
+                    localStorage.setItem('refreshscan', false);
+                }
             }
             if ($this.data('menu') == 'opcionais') {
                 app.changePage('#opcionais');
@@ -335,11 +353,23 @@ var app = {
             }
         });
 
+        $(document).on('click', '.banquinho', function() {
+            var $this = $(this);
+            localStorage.otherback = localStorage.backhistory;
+            app.abreBanquinho($(this).data('id'));
+        });
+
         //// Back Button
         // Sim, este foi o único meio que encontrei pro back button funcionar...
         $(document).on('click', '.backbutton', function() {
             var $back = localStorage.getItem('backhistory');
-            var $newback = '';
+            if (localStorage.otherback){
+                var $newback = localStorage.otherback;  
+            } else {
+                var $newback = '';
+            }
+            localStorage.otherback = '';
+            
             if ($back == '#listapassageirosdogrupo') { $newback = '#grupomenu'; }
             else if ($back == '#grupomenu') { $newback = '#grupos'; }
             else if ($back == '#grupos') { $newback = '#principal'; }
@@ -357,6 +387,7 @@ var app = {
 
         $(document).on('click', '.scandinamico', function() {
             localStorage.setItem('backhistory', "#pedidos");
+            localStorage.setItem('refreshscan', true);
             app.criaScanDinamico(localStorage.getItem('opcional'));
             app.changePage('#contarporscan');
         });
@@ -431,6 +462,29 @@ var app = {
             $('#scaneados').html(0);
             $('#scantotal').html($('#listcontarporscan').find('[data-id]').length);
         });
+
+        $(document).on('click', '.deposita', function() {
+            console.log($('#babecalho').data('id'));
+            deposita($('#babecalho').data('id'));
+        });
+
+        $(document).on('click', '.saca', function() {
+            saca($('#babecalho').data('id'));
+            console.log($('#babecalho').data('id'));
+        });
+
+        $(document).on('click', '.abrepopdeletasaque', function() {
+            localStorage.saqueadeletar = $(this).data('id');
+            $('#popupDialog').popup("open", {
+                "transition": "pop"
+            });
+        });
+
+        $(document).on('click', '.apagasaque', function() {
+            apagasaque(localStorage.saqueadeletar, $('#babecalho').data('id'));
+        });
+
+        
     },
 
     enviaPulseira: function() {
@@ -482,6 +536,7 @@ var app = {
 
                     });
                     $('.cadastropulseiras').trigger("click");
+                    app.criaContaScan(localStorage.gp);
                     alert('Atualizado com sucesso');
                     
                     
@@ -518,15 +573,18 @@ var app = {
                 tipo : localStorage.getItem('user_or_admin')
             }
         }).success(function jsSuccess(data, textStatus, jqXHR){
+            $.mobile.loading( "hide" );
+            console.log(data);
             $.each(data.data.temporadas, function(index,item) {
                 $('#temporada-select')
                   .append($('<option>', { value : item.id })
                   .text(item.nome));
             });
             if (data.data.count == 1){
-                alert('Você conectou com sucesso!');
+                alert('Você conectou com sucesso! Aguarde enquanto sincronizamos os dados.');
                 if (localStorage.getItem('user_or_admin') == "user") {
                      localStorage.setItem('gp', data.data.temporadas[0].grupo_guia);
+                     app.mobileLoading();
                 }
                 app.sincroniza(data.data.temporadas[0].id);
                
@@ -607,7 +665,9 @@ var app = {
             var source   = $("#contarporscan-template").html();
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
+            console.log(passageiros);
             $('#scantotal').text(passageiros.passageiros.length);
+            $('#scaneados').text(0);
             var html = template(passageiros);            
             $("#contarporscan #articleHandlebars").html(html);   
             $("#contarporscan #listview-content").trigger('create');  
@@ -626,6 +686,7 @@ var app = {
             var template = Handlebars.compile(source);
             passageiros = {'passageiros' : passageiros };
             $('#scantotal').text(passageiros.passageiros.length);
+            $('#scaneados').text(0);
             var html = template(passageiros);            
             $("#contarporscan #articleHandlebars").html(html);   
             $("#contarporscan #listview-content").trigger('create');  
@@ -643,8 +704,8 @@ var app = {
             var template = Handlebars.compile(source);
             opcionais = {'opcionais' : opcionais };
             var html = template(opcionais);  
-            $("#opcionais #articleHandlebars").html(html);   
-            $("#opcionais #listview-content").trigger('create');  
+            $("#opcionais #articleHandlebars").html(html);
+            $("#opcionais #listview-content").trigger('create');
             $("#opcionais #listview-page").trigger('pagecreate');
             $("#opcionais #articleHandlebars ul").listview('refresh');
             $("#opcionais #articleHandlebars ul").listview().listview('refresh');
@@ -673,6 +734,7 @@ var app = {
 
     mostraPassageiro: function(paxid,backhistory) {
         database.retrievePassageiro(paxid, function(passageiro) {
+            var historyid = localStorage.backhistory;
             if (passageiro == "inexistente") {
                 alert('passageiro inexistente');
                 
@@ -685,6 +747,7 @@ var app = {
 
                 // Carrego as outras infos... não achei modo mais esperto
                 //app.carregaResumoFicha(passageiro.id);
+                app.carregaInfoPax(paxid, "banquinho", "#banquinhoresumo-template", "#articleHandlebarsBanquinho");
                 app.carregaInfoPax(paxid, "resumo_medico", "#resumoficha-template", "#articleHandlebarsFicha");          
                 app.carregaInfoPax(paxid, "responsaveis", "#responsaveis-template", "#articleHandlebarsResponsaveis");
                 app.carregaInfoPax(paxid, "contatos", "#contatos-template", "#articleHandlebarsContatos");
@@ -695,9 +758,35 @@ var app = {
                 if (backhistory) {
                     localStorage.setItem('backhistory', backhistory);
                 }
-                app.changePage('#passageiro-view');
+                if (historyid != "#passageiro-view") {
+                    app.changePage('#passageiro-view');
+                }
             }        
         });        
+    },
+
+    abreBanquinho: function(paxid) {
+        console.log('abrebanquinho');
+        database.retrievePassageiro(paxid, function(passageiro) {
+            if (passageiro == "inexistente") {
+                alert('passageiro inexistente');
+            }
+            else {
+                var source   = $("#detalhebanquinho-template").html();
+                var template = Handlebars.compile(source);
+                var html = template(passageiro);
+                $("#banquinho-view #articleHandlebars").html(html);
+
+                app.carregaBanquinhoPax(paxid, "banquinho", "#banquinho-template", "#articleHandlebarsBanquinho");          
+                app.carregaBanquinhoPax(paxid, "saques", "#saques-template", "#articleHandlebarsSaque");
+                // app.carregaInfoPax(paxid, "contatos", "#contatos-template", "#articleHandlebarsContatos");
+                // app.carregaInfoPax(paxid, "enderecos", "#enderecos-template", "#articleHandlebarsEnderecos");
+                // app.carregaInfoPax(paxid, "opcionais", "#opcionais-template", "#articleHandlebarsOpcionais");
+          
+                localStorage.setItem('backhistory', '#passageiro-view');
+                app.changePage('#banquinho-view');
+            }
+        });
     },
 
     mostraPedidos: function(grupo, opcional,titulo) {
@@ -766,6 +855,23 @@ var app = {
                     if ($(this).text() == "true") { $(this).replaceWith('<li class="ui-li ui-li-static ui-btn-up-c ui-body-inherit ui-last-child">Sim/Yes</li>'); } 
                 });
             }
+            
+        });        
+    },
+
+    carregaBanquinhoPax: function(passageiro, db, hbtemplate, wrapper ) {
+        database.retrieveForPax(passageiro, db, function(resposta) {
+            var source   = $(hbtemplate).html();
+            var template = Handlebars.compile(source);
+            resposta[db] = resposta;
+            console.log(resposta);
+            var html = template(resposta);
+
+            $("#banquinho-view "+wrapper.toString()).html(html);   
+            $("#banquinho-view #listview-content").trigger('create');  
+            $("#banquinho-view #listview-page").trigger('pagecreate');
+            $("#banquinho-view "+wrapper.toString()+" ul").listview('refresh');
+            $("#banquinho-view "+wrapper.toString()+" ul").listview().listview('refresh');
             
         });        
     },
@@ -992,6 +1098,40 @@ var database = {
             }
         );
 
+        this.db.transaction(
+            function(tx) {
+                var sql =
+                    "CREATE TABLE IF NOT EXISTS saques ( " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "data DATE, " +
+                    "cliente_id INTEGER, " +
+                    "valor INTEGER)";
+                tx.executeSql(sql);
+            },
+            this.txErrorHandler,
+            function() {
+                console.log('Tabela pedidos criada com sucesso');
+            }
+        );
+
+        this.db.transaction(
+            function(tx) {
+                var sql =
+                    "CREATE TABLE IF NOT EXISTS banquinho ( " +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "deposito INTEGER, " +
+                    "cliente_id INTEGER, " +
+                    "saldo INTEGER, " +
+                    "envelope VARCHAR(5), " +
+                    "UNIQUE(cliente_id))";
+                tx.executeSql(sql);
+            },
+            this.txErrorHandler,
+            function() {
+                console.log('Tabela pedidos criada com sucesso');
+            }
+        );
+
 
     },
 
@@ -1054,6 +1194,24 @@ var database = {
                 for (var i = 0; i < l; i++) {
                     e = clientes[i];
                     var params = [e.id, e.cpf, e.data_nascimento, e.email, e.n_passaporte, e.nome_passaporte, e.observacoes, e.sexo, e.validade_passaporte, grupo, ""];
+                    tx.executeSql(sql, params);
+                }
+                });
+               },
+            this.txErrorHandler
+        );
+
+        this.db.transaction(
+            function(tx) {
+                $.each(clientes_por_grupo, function(grupo,clientes) {
+                var l = clientes.length;
+                var sql =
+                    "INSERT OR IGNORE INTO banquinho (deposito, cliente_id, saldo) " +
+                    "VALUES (?, ?, ?)";
+                var e;
+                for (var i = 0; i < l; i++) {
+                    e = clientes[i];
+                    var params = [0, e.id, 0];
                     tx.executeSql(sql, params);
                 }
                 });
@@ -1294,7 +1452,7 @@ var database = {
                     var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.grupo_id LIKE '"+grupo+"' ORDER BY pedidos.situacao DESC";
                 }
                 if (tipo == "dinamico") {
-                    var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.situacao LIKE 1 ORDER BY clientes.nome ASC";
+                    var sql = "SELECT pedidos.situacao, clientes.nome, clientes.id, clientes.scanid FROM pedidos INNER JOIN clientes ON pedidos.cliente_id = clientes.id WHERE pedidos.opcional_id LIKE '"+opcional+"' AND pedidos.situacao LIKE 1 ORDER BY clientes.nome ASC";
                 }
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
@@ -1314,7 +1472,7 @@ var database = {
     retrievePassageiro: function(pax,callback) {
         this.db.transaction(
             function(tx) {
-                var sql = "SELECT c.nome, c.data_nascimento, c.n_passaporte, c.cpf, grupos.nome AS gruponome FROM `clientes` AS c INNER JOIN grupos ON c.grupo_id = grupos.id WHERE c.id LIKE '"+pax+"';";
+                var sql = "SELECT c.id, c.nome, c.data_nascimento, c.n_passaporte, c.cpf, grupos.nome AS gruponome FROM `clientes` AS c INNER JOIN grupos ON c.grupo_id = grupos.id WHERE c.id LIKE '"+pax+"';";
                 tx.executeSql(sql, this.txErrorHandler,
                     function(tx, results) {
                         if (results.rows.length > 0) {
@@ -1419,7 +1577,7 @@ function success(resultArray) {
 }
 
 function failure(error) {
-    alert("Failed: " + error);
+
 }
 
 function scan() {
@@ -1440,7 +1598,8 @@ $('#target').tap(function() {
             $('#output').html(0);
 });
 
-$('#contarscanbutton').tap(function() {
+
+$(document).on('click', '#contarscanbutton', function() {
     scan2();
 });
 
@@ -1451,13 +1610,11 @@ function success2(resultArray) {
         $('#listcontarporscan').find("[data-id = '"+passageiroid+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
-        scan2();
     }
     if ($('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']:visible").length > 0) {
         $('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
-        scan2();
     }
 
 }
@@ -1492,5 +1649,93 @@ function cadastrascan(resultArray) {
         database.txErrorHandler
     );
     $('.cadastropulseiras').trigger("click");
+    app.criaContaScan(localStorage.gp);
     alert('cadastrado com sucesso');   
+}
+
+
+function deposita(pax) {
+    console.log(pax);
+    valor = $('#adepositar:visible').val();
+    envelope = $('#aenvelopar:visible').val();
+    if (valor == "") {
+        alert('Favor informar o valor');
+        return false
+    }
+    database.db.transaction(
+        function(tx) {
+            query = "UPDATE banquinho SET deposito='"+valor+"', envelope='"+envelope+"' WHERE cliente_id="+pax+"; ";
+            tx.executeSql(query)         
+        },
+        database.txErrorHandler
+    );
+    $('#totaldepositado').html(valor);
+    $('#popupdeposito').popup( "close" );
+    atualizasaldo(pax);
+}
+
+function saca(pax) {
+    console.log(pax);
+    valor = $('#asacar:visible').val();
+    datasaque = new Date();
+    
+    if (valor == "") {
+        alert('Favor informar o valor');
+        return false
+    }
+    
+    database.db.transaction(
+        function(tx) {
+            query = "INSERT INTO saques (data, cliente_id, valor) VALUES("+datasaque.getTime()+","+pax+","+valor+"); ";
+            tx.executeSql(query);
+        },
+        database.txErrorHandler
+    );
+ $('#popupsaque').popup( "close" );
+ atualizasaldo(pax);
+}
+
+function atualizasaldo(pax) {
+    console.log(pax);
+    deposito = parseInt($('#totaldepositado:visible').html());
+    $saldototal = 0;
+    database.db.transaction(function (tx) {
+       tx.executeSql('SELECT * FROM saques WHERE cliente_id LIKE '+pax+';', [], function (tx, results) {
+          var len = results.rows.length, i;
+          $saldototal = 0;
+          for (i = 0; i < len; i++){
+            $saldototal = $saldototal + parseInt(results.rows.item(i).valor);
+          }
+
+          $saldototal = deposito - $saldototal;
+          continuasaldo(pax,$saldototal)
+       }, null);
+    });   
+}
+
+function continuasaldo(pax, saldo) {
+
+    database.db.transaction(
+        function(tx) {
+            query = "UPDATE banquinho SET saldo='"+saldo+"' WHERE cliente_id="+pax+"; ";
+            tx.executeSql(query);
+        },
+        database.txErrorHandler
+    );
+    $('#popupsaque').popup( "close" );
+    app.mostraPassageiro(pax);
+    app.abreBanquinho(pax);
+}
+
+function apagasaque(saque, pax) {
+
+    database.db.transaction(
+        function(tx) {
+            query = "DELETE FROM saques WHERE id='"+saque+"';";
+            tx.executeSql(query);
+        },
+        database.txErrorHandler
+    );
+    $('#popupDialog').popup( "close" );
+    atualizasaldo(pax);
 }

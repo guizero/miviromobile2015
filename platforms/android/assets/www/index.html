@@ -37,6 +37,7 @@
             
         <!-- Owl Carousel -->
         <script src="js/owl.carousel.min.js"></script>
+        <script src="js/strftime.js"></script>
 
         <title>Miviro Mobile 1.0</title>
     </head>
@@ -218,6 +219,8 @@
             <div data-role="content" id="listview-content">                 
                <div class="decoration"></div>  
                   <div id="articleHandlebars" data-demo-html="true"></div>
+
+                  <div id="articleHandlebarsBanquinho" data-demo-html="true"></div>
                
                   <div id="articleHandlebarsResponsaveis" data-demo-html="true"></div>
                 
@@ -229,6 +232,31 @@
                 
                   <div id="articleHandlebarsFicha" data-demo-html="true"></div>
                   
+            </div><!-- /content -->      
+            
+            <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
+                <h1>Voltar</h1>
+            </div>
+        </div>
+
+         <!-Banquinho View->
+        <div data-role="page" id="banquinho-view" id="listview-page" data-theme="b">
+            <form id="searchform" data-theme="b">
+                <input data-role="none" class="nightly-input" type="text" name="s" placeholder="Procurar cliente..." />
+                <input data-role="none" class="nightly-button" type="submit" name="submit" value="" />
+            </form> 
+    
+            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme=''>
+                <a href='#sidebar'data-role="none"><img src="images/menu-icon.png" alt="sidebar" id="header-menu-icon" /></a>
+                <h1 class="header-title">Banquinho</h1>
+                <a href='#sidesearch' data-role="none" id="a-search"><img src="images/search-icon.png" alt="search" id="header-search-icon" /></a>
+            </div>
+
+            <div data-role="content" id="listview-content">                 
+               <div class="decoration"></div>  
+                  <div id="articleHandlebars" data-demo-html="true"></div>               
+                  <div id="articleHandlebarsBanquinho" data-demo-html="true"></div>
+                  <div id="articleHandlebarsSaque" data-demo-html="true"></div>                            
             </div><!-- /content -->      
             
             <div data-role="footer" data-tap-toggle="false" data-position="fixed" class="backbutton">
@@ -359,11 +387,11 @@
                 </div>
                 <div class="ui-grid-b ui-responsive" style="">
                     <a href="#" class="ui-shadow ui-btn ui-corner-all backbutton"  data-theme="b" ><i class="fa fa-chevron-left"></i></a>
-                    <a href="#popupDialog" data-rel="popup" data-position-to="window" data-role="button" data-transition="pop" data-theme="b"><i class="fa fa-refresh"></i></a>
+                    <a href="#popupDialogrefresh" data-rel="popup" data-position-to="window" data-role="button" data-transition="pop" data-theme="b"><i class="fa fa-refresh"></i></a>
                     <a href="#" class="ui-shadow ui-btn ui-corner-all" data-theme="b" style="float:right" id="contarscanbutton" ><i class="fa fa-barcode"></i>ESCANEAR</a>
                 </div>
             </div>
-            <div data-role="popup" id="popupDialog" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
+            <div data-role="popup" id="popupDialogrefresh" data-overlay-theme="a" data-theme="b" data-dismissible="false" style="max-width:400px;" class="ui-corner-all">
                 <div data-role="header" data-theme="b" class="ui-corner-top">
                     <h1>Reiniciar a contagem</h1>
                 </div>
@@ -548,7 +576,7 @@
         <script id="contarporscan-template" type="text/x-handlebars-template">
             <ol id="listcontarporscan" data-role="listview">
               {{#each passageiros}} 
-                <li data-id="{{id}}" data-scan-id="{{scanid}}">{{nome}} - {{id}}</li>
+                <li data-id="{{id}}" data-scan-id="{{scanid}}">{{nome}}</li>
               {{/each}}              
             </ol>
         </script>
@@ -587,6 +615,63 @@
             </ul>
         </script>
 
+        <script id="detalhebanquinho-template" type="text/x-handlebars-template">
+            <div id="babecalho" data-id={{id}}>
+                <h5 style="margin-bottom:-20px">{{gruponome}}</h5>
+                <h3 style="margin-bottom:-20px">{{nome}}</h4>
+                <h5>Banquinho</h5>
+            </div>
+        </script>
+
+        <script id="saques-template" type="text/x-handlebars-template">
+            <ul id="listv" data-role="listview" data-autodividers="false"  data-filter="false" data-inset="true" data-corners="false">
+              {{#each saques}} 
+                <li><h5><b>Valor:</b> US$ <span class='saquevalor'>{{valor}}</span> - <b>Data:</b> {{pegadata data}}<span style='float:right;' class='removesaque'><a href="javascript:void(0)" class='abrepopdeletasaque' data-rel="popup" data-position-to="window" data-transition="pop" data-id='{{id}}'><i class='fa fa-minus-circle' style=' color:red;'></i></a></h5></li>
+              {{else}}
+                <li>Nenhum saque ainda efetuado</li>
+              {{/each}}              
+            </ul>
+            <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" data-corners="false" data-shadow="false" data-border="true" style="max-width:400px;">
+                <div data-role="header" data-theme="b">
+                    <h2 class="header-title">Apagar saque</h2>
+                </div>
+                <div role="main" class="ui-content">
+                    <h3 class="ui-title">Você deseja apagar este saque?</h3>
+                <p>Esta ação não pode ser desfeita.</p>
+                    <a href="javascript:void(0)" data-rel="back"><button data-role="none" class="nightly-button" data-theme="b">Cancelar</button></a>
+                    <a href="javascript:void(0)" data-rel="back" data-transition="flow"><button data-role="none" class="nightly-button apagasaque" data-theme="b"><i class="fa fa-trash-o"></i>Apagar</button></a>
+                </div>
+            </div>
+        </script>
+
+        <script id="banquinho-template" type="text/x-handlebars-template">
+            <a href="#popupdeposito" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-a" data-transition="pop"><i class="fa fa-university" style="float:left"></i>Depósito Inicial</a>
+            <a href="#popupsaque" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b" data-transition="pop"><i class="fa fa-money" style="float:left"></i>Novo saque</a>
+            <h4 class="ui-bar ui-bar-c">Depósito: <span>US$</span> <span id="totaldepositado">{{banquinho.0.deposito}}</span><span style='float:right'><b>Saldo:</b> US$ {{banquinho.0.saldo}}</span><br>Conta: {{banquinho.0.envelope}}</h4>
+            <h4 class="ui-bar ui-bar-b">Lista de saques:</h4>
+            
+
+            <div data-role="popup" id="popupdeposito" data-theme="a" class="ui-corner-all">
+                    <div style="padding:30px 20px; margin: -70px 0 -40px 0">
+                        <h3>Depósito</h3>
+                        <label for="un" class="ui-hidden-accessible">Valor:</label>
+                        <input type="text" name="user" id="adepositar" value="{{banquinho.0.deposito}}" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <label for="un" class="ui-hidden-accessible">Conta:</label>
+                        <input type="text" name="user" id="aenvelopar" value="{{banquinho.0.envelope}}" placeholder="Número..." data-theme="a" data-clear-btn="true">
+                        <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check deposita" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
+                    </div>
+            </div>
+
+            <div data-role="popup" id="popupsaque" data-theme="a" class="ui-corner-all">                
+                    <div style="padding:30px 20px; margin: -70px 0 -40px 0">
+                        <h3>Novo saque</h3>
+                        <label for="un" class="ui-hidden-accessible">Valor:</label>
+                        <input type="text" name="user" id="asacar" value="" placeholder="USD" data-theme="a" data-clear-btn="true">
+                        <a href="javascript:void(0)" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check saca" data-id="{{banquinho.0.cliente_id}}">Inserir</a>
+                    </div>                
+            </div>
+        </script>
+
         <!-- Detalhe Passageiro -->
         <script id="detalhepax-template" type="text/x-handlebars-template">
             <div id="cabecalho">
@@ -619,7 +704,7 @@
                             <li class="ui-li ui-li-static ui-btn-up-c">Não informado</li>
                         {{/if}}            
                     </ul>  
-                </div>  
+                </div>                
         </script>
 
         <script id="responsaveis-template" type="text/x-handlebars-template">
@@ -633,6 +718,19 @@
                         {{/each}}                
                     </ul>
                 </div>
+        </script>
+
+        <script id="banquinhoresumo-template" type="text/x-handlebars-template">
+               <div data-role="collapsible" data-iconpos="right">
+                   <h3><i class="fa fa-money"></i>Banquinho</h3>             
+                   <ul data-role="listview" class="ui-listview" data-inset="true">
+                       <li data-role="list-divider">Total depositado</li>
+                       <li class="ui-li ui-li-static ui-btn-up-c">US$ {{banquinho.0.deposito}}</li>
+                       <li data-role="list-divider">Saldo</li>
+                       <li class="ui-li ui-li-static ui-btn-up-c">US$ {{banquinho.0.saldo}}</li>
+                       <a href="javascript:void(0)" class="ui-btn ui-corner-all banquinho" data-id="{{banquinho.0.cliente_id}}">Gerenciar Banquinho</a>
+                   </ul>  
+               </div>    
         </script>
 
         <script id="enderecos-template" type="text/x-handlebars-template">

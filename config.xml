@@ -7,6 +7,7 @@
     <author email="contato@miviro.com.br" href="http://phonegap.com">
         Miviro Gerencial
     </author>
+    <preference name="phonegap-version" value="cli-8.1.1" />
     <content src="index.html" />
     <preference name="permissions" value="none" />
     <preference name="orientation" value="portrait" />
@@ -23,26 +24,26 @@
     <preference name="disable-cursor" value="false" />
     <preference name="android-minSdkVersion" value="7" />
     <preference name="android-installLocation" value="auto" />
-    <preference name="android-minSdkVersion" value="10" />
-    <gap:plugin name="org.apache.cordova.battery-status" />
-    <gap:plugin name="org.apache.cordova.camera" />
-    <gap:plugin name="org.apache.cordova.media-capture" />
-    <gap:plugin name="org.apache.cordova.console" />
-    <gap:plugin name="org.apache.cordova.contacts" />
-    <gap:plugin name="org.apache.cordova.device" />
-    <gap:plugin name="org.apache.cordova.device-motion" />
-    <gap:plugin name="org.apache.cordova.device-orientation" />
-    <gap:plugin name="org.apache.cordova.dialogs" />
-    <gap:plugin name="org.apache.cordova.file" />
-    <gap:plugin name="org.apache.cordova.file-transfer" />
-    <gap:plugin name="org.apache.cordova.geolocation" />
-    <gap:plugin name="org.apache.cordova.globalization" />
-    <gap:plugin name="org.apache.cordova.inappbrowser" />
-    <gap:plugin name="org.apache.cordova.media" />
-    <gap:plugin name="org.apache.cordova.network-information" />
-    <gap:plugin name="org.apache.cordova.splashscreen" />
-    <gap:plugin name="org.apache.cordova.vibration" />
-    <icon src="icon.png" />
+    <preference name="android-minSdkVersion" value="19" />
+    <plugin name="cordova-plugin-battery-status" source="npm" spec="~2.0.2" />
+    <plugin name="cordova-plugin-camera" source="npm" spec="~4.0.3" />
+    <plugin name="cordova-plugin-media-capture" source="npm" spec="~3.0.2" />
+    <plugin name="cordova-plugin-device" source="npm" spec="~2.0.2" />
+    <plugin name="cordova-plugin-dialogs" source="npm" spec="~2.0.1" />
+    <plugin name="cordova-plugin-file" source="npm" spec="~6.0.1" />
+    <plugin name="cordova-plugin-geolocation" source="npm" spec="~4.0.1" />
+    <plugin name="cordova-plugin-globalization" source="npm" spec="~1.11.0" />
+    <plugin name="cordova-plugin-inappbrowser" source="npm" spec="~3.0.0" />
+    <plugin name="cordova-plugin-network-information" source="npm" spec="~2.0.1" />
+    <plugin name="cordova-plugin-vibration" source="npm" spec="~3.1.0" />
+    <plugin name="cordova-plugin-file-transfer" spec="~1.7.1" />
+    <plugin name="cordova-plugin-console" spec="~1.1.0" />
+    <plugin name="cordova-plugin-contacts" spec="~3.0.1" />
+    <plugin name="cordova-plugin-device-motion" spec="~2.0.1" />
+    <plugin name="cordova-plugin-device-orientation" spec="~2.0.1" />
+    <plugin name="cordova-plugin-media" spec="~5.0.2" />
+    <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
+      <plugin name="phonegap-plugin-barcodescanner" spec="^8.0.1" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="10000" />
     <preference name="SplashMaintainAspectRatio" value="true" />
@@ -61,5 +62,5 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <engine name="android" spec="^4.0.0" />
+    <engine name="android" spec="^7.1.4" />
 </widget>

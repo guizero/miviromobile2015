@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.phonegap.miviromobile" version="2.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.phonegap.miviromobile" version="2.2.1" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Miviro Mobile</name>
     <description>
         Application that connects to the Miviro service!
@@ -7,6 +7,8 @@
     <author email="contato@miviro.com.br" href="http://phonegap.com">
         Miviro Gerencial
     </author>
+     <icon src="icon.png" />
+     <splash src="splash.png" />
     <preference name="phonegap-version" value="cli-8.1.1" />
     <content src="index.html" />
     <preference name="permissions" value="none" />

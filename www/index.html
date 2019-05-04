@@ -2,6 +2,12 @@
 
 <html>
     <head>
+        <meta http-equiv="Content-Security-Policy" content="
+                    default-src * gap://ready;
+                    style-src * 'unsafe-inline';
+                    script-src * 'unsafe-inline' 'unsafe-eval';
+                    frame-src *;
+                    media-src * ; img-src  * data:;" />
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->

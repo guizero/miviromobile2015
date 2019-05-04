@@ -1555,15 +1555,15 @@ var database = {
 };
 
 function success(resultArray) {
-
+    
     database.db.transaction(function(tx) {
-            query = "SELECT * FROM clientes WHERE 1=1 AND scanid LIKE '"+resultArray[0]+"'  ORDER BY id ASC LIMIT 0, 50000;";
+            query = "SELECT * FROM clientes WHERE 1=1 AND scanid LIKE '"+resultArray.text+"'  ORDER BY id ASC LIMIT 0, 50000;";
             tx.executeSql(query, [], function(tx, results){
                 app.setMainBackHistory();
                 if (results.rows.length > 0) {
                     app.mostraPassageiro(results.rows.item(0).id);    
                 } else {
-                    cliente = resultArray[0].split("|");
+                    cliente = resultArray.text.split("|");
                     passageiro = cliente[1];
                     app.mostraPassageiro(cliente[1]);                
                 }
@@ -1581,12 +1581,10 @@ function failure(error) {
 }
 
 function scan() {
-    // See below for all available options.
-    cordova.exec(success, failure, "ScanditSDK", "scan",
-                 ["T9wvdOtuEeOd16y4en1qM7Gex2FyAInOBBaHuIEVu1o",
-                  {"beep": true,
-                  "1DScanning" : true,
-                  "2DScanning" : true}]);
+    
+    //code for new plugin
+    cordova.plugins.barcodeScanner.scan(success,failure);
+    
 }
 
 
@@ -1604,15 +1602,17 @@ $(document).on('click', '#contarscanbutton', function() {
 });
 
 function success2(resultArray) {
-    cliente = resultArray[0].split("|");
+   
+   // cliente = resultArray[0].split("|");
+    cliente = resultArray.text.split("|");
     passageiroid = cliente[1];
     if ($('#listcontarporscan').find("[data-id = '"+passageiroid+"']:visible").length > 0) {
         $('#listcontarporscan').find("[data-id = '"+passageiroid+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
     }
-    if ($('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']:visible").length > 0) {
-        $('#listcontarporscan').find("[data-scan-id = '"+resultArray[0]+"']").hide();
+    if ($('#listcontarporscan').find("[data-scan-id = '"+resultArray.text+"']:visible").length > 0) {
+        $('#listcontarporscan').find("[data-scan-id = '"+resultArray.text+"']").hide();
         $('#scaneados').html(function(i, val) { return val*1+1 });
         $('#scantotal').html(function(i, val) { return val*1-1 });
     }
@@ -1620,26 +1620,23 @@ function success2(resultArray) {
 }
 
 function scan2() {
-    // See below for all available options.
-    cordova.exec(success2, failure, "ScanditSDK", "scan",
-                 ["T9wvdOtuEeOd16y4en1qM7Gex2FyAInOBBaHuIEVu1o",
-                  {"beep": true,
-                  "1DScanning" : true,
-                  "2DScanning" : true}]);
+    
+    //code for new plugin
+    cordova.plugins.barcodeScanner.scan(success2, failure);
 }
 
 function scancadastro() {
-    // See below for all available options.
-    cordova.exec(cadastrascan, failure, "ScanditSDK", "scan",
-                 ["T9wvdOtuEeOd16y4en1qM7Gex2FyAInOBBaHuIEVu1o",
-                  {"beep": true,
-                  "1DScanning" : true,
-                  "2DScanning" : true}]);
+    
+    //code for new plugin
+    cordova.plugins.barcodeScanner.scan(cadastrascan, failure);
 }
 
 function cadastrascan(resultArray) {
-    codigo = resultArray[0];
-
+    
+   // codigo = resultArray[0];
+    codigo = resultArray.text;
+    
+    
     database.db.transaction(
         function(tx) {
             query = "UPDATE clientes SET scanid='"+codigo+"' WHERE id="+localStorage.getItem('cliente_scan_id')+"; ";
